@@ -23,6 +23,8 @@ use mysqli_sql_exception;
 
 /**
  * Class Database.
+ *
+ * @property-read Functions $functions The functions instance
  */
 class Database
 {
@@ -48,6 +50,14 @@ class Database
 	 */
 	protected bool $inTransaction = false;
 	protected string $lastQuery = '';
+	/**
+	 * The functions instance.
+	 *
+	 * Accessible via the __get() magic method.
+	 *
+	 * @var Functions
+	 */
+	protected Functions $functions;
 
 	/**
 	 * Database constructor.
@@ -80,6 +90,20 @@ class Database
 	public function __destruct()
 	{
 		$this->mysqli->close();
+	}
+
+	public function __get(string $name) : mixed
+	{
+		if ($name === 'functions') {
+			if ( ! isset($this->functions)) {
+				$this->functions = new Functions($this);
+			}
+			return $this->functions;
+		}
+		if (\property_exists($this, $name)) {
+			throw new LogicException("Property not allowed: {$name}");
+		}
+		throw new LogicException("Property not found: {$name}");
 	}
 
 	/**
