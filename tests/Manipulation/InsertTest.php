@@ -39,17 +39,17 @@ final class InsertTest extends TestCase
 	{
 		$this->insert->into('t1')->set(['id' => 1]);
 		$this->insert->options($this->insert::OPT_DELAYED);
-		$this->assertEquals(
+		self::assertSame(
 			"INSERT\n DELAYED\n INTO `t1`\n SET `id` = 1\n",
 			$this->insert->sql()
 		);
 		$this->insert->options($this->insert::OPT_IGNORE);
-		$this->assertEquals(
+		self::assertSame(
 			"INSERT\n IGNORE\n INTO `t1`\n SET `id` = 1\n",
 			$this->insert->sql()
 		);
 		$this->insert->options($this->insert::OPT_DELAYED, $this->insert::OPT_IGNORE);
-		$this->assertEquals(
+		self::assertSame(
 			"INSERT\n DELAYED IGNORE\n INTO `t1`\n SET `id` = 1\n",
 			$this->insert->sql()
 		);
@@ -81,19 +81,19 @@ final class InsertTest extends TestCase
 		$this->prepare();
 		$this->insert->columns('id', 'name', 'email');
 		$this->insert->values(1, 'Foo', 'foo@baz.com');
-		$this->assertEquals(
+		self::assertSame(
 			"INSERT\n INTO `t1`\n (`id`, `name`, `email`)\n VALUES (1, 'Foo', 'foo@baz.com')\n",
 			$this->insert->sql()
 		);
 		$this->insert->values(2, 'Bar', 'bar@baz.com');
-		$this->assertEquals(
+		self::assertSame(
 			"INSERT\n INTO `t1`\n (`id`, `name`, `email`)\n VALUES (1, 'Foo', 'foo@baz.com'),\n (2, 'Bar', 'bar@baz.com')\n",
 			$this->insert->sql()
 		);
 		$this->insert->values(10, 'Baz', static function () {
 			return 'select email from foo';
 		});
-		$this->assertEquals(
+		self::assertSame(
 			"INSERT\n INTO `t1`\n (`id`, `name`, `email`)\n VALUES (1, 'Foo', 'foo@baz.com'),\n (2, 'Bar', 'bar@baz.com'),\n (10, 'Baz', (select email from foo))\n",
 			$this->insert->sql()
 		);
@@ -109,7 +109,7 @@ final class InsertTest extends TestCase
 				return "CONCAT('Foo', ' ', 1)";
 			},
 		]);
-		$this->assertEquals(
+		self::assertSame(
 			"INSERT\n INTO `t1`\n SET `id` = 1, `name` = 'Foo', `other` = (CONCAT('Foo', ' ', 1))\n",
 			$this->insert->sql()
 		);
@@ -121,7 +121,7 @@ final class InsertTest extends TestCase
 		$this->insert->columns('id');
 		$this->insert->set(['id' => 1]);
 		$this->expectException(\LogicException::class);
-		$this->expectExceptionMessage('SET statement is not allowed when columns are set');
+		$this->expectExceptionMessage('SET clause is not allowed when columns are set');
 		$this->insert->sql();
 	}
 
@@ -131,7 +131,7 @@ final class InsertTest extends TestCase
 		$this->insert->values('id');
 		$this->insert->set(['id' => 1]);
 		$this->expectException(\LogicException::class);
-		$this->expectExceptionMessage('SET statement is not allowed when VALUES is set');
+		$this->expectExceptionMessage('SET clause is not allowed when VALUES is set');
 		$this->insert->sql();
 	}
 
@@ -141,7 +141,7 @@ final class InsertTest extends TestCase
 		$this->insert->select(static function (Select $select) {
 			return $select->columns('*')->from('t2');
 		});
-		$this->assertEquals(
+		self::assertSame(
 			"INSERT\n INTO `t1`\n SELECT\n *\n FROM `t2`\n\n",
 			$this->insert->sql()
 		);
@@ -182,7 +182,7 @@ final class InsertTest extends TestCase
 				return "CONCAT('Foo', 'id')";
 			},
 		]);
-		$this->assertEquals(
+		self::assertSame(
 			"INSERT\n INTO `t1`\n SET `id` = 1\n ON DUPLICATE KEY UPDATE `id` = NULL, `name` = 'Foo', `other` = (CONCAT('Foo', 'id'))\n",
 			$this->insert->sql()
 		);
@@ -192,7 +192,7 @@ final class InsertTest extends TestCase
 	{
 		$this->createDummyData();
 		$this->prepare();
-		$this->assertEquals(
+		self::assertSame(
 			1,
 			$this->insert->set(['c2' => 'foo'])->run()
 		);

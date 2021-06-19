@@ -3,12 +3,12 @@
 use Framework\Database\Definition\Table\Indexes\Keys\UniqueKey;
 use Tests\Database\TestCase;
 
-class UniqueKeyTest extends TestCase
+final class UniqueKeyTest extends TestCase
 {
 	public function testType() : void
 	{
 		$index = new UniqueKey(static::$database, null, 'id');
-		$this->assertEquals(
+		self::assertSame(
 			' UNIQUE KEY (`id`)',
 			$index->sql()
 		);

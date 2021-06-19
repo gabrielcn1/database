@@ -13,7 +13,7 @@ final class CreateTableTest extends TestCase
 		$this->createTable = new CreateTable(static::$database);
 	}
 
-	protected function prepare()
+	protected function prepare() : CreateTable
 	{
 		return $this->createTable->table('t1')
 			->definition(static function (TableDefinition $definition) : void {
@@ -43,7 +43,7 @@ final class CreateTableTest extends TestCase
 				$definition->column('c1')->int(11);
 				$definition->column('c2')->varchar(255);
 			});
-		$this->assertEquals(
+		self::assertSame(
 			"CREATE TABLE `t1` (\n  `c1` int(11) NOT NULL,\n  `c2` varchar(255) NOT NULL\n)",
 			$sql->sql()
 		);
@@ -56,7 +56,7 @@ final class CreateTableTest extends TestCase
 				$definition->column('c1')->int();
 				$definition->index()->primaryKey('c1');
 			});
-		$this->assertEquals(
+		self::assertSame(
 			"CREATE TABLE `t1` (\n  `c1` int NOT NULL,\n  PRIMARY KEY (`c1`)\n)",
 			$sql->sql()
 		);
@@ -64,7 +64,7 @@ final class CreateTableTest extends TestCase
 
 	public function testIfNotExists() : void
 	{
-		$this->assertEquals(
+		self::assertSame(
 			"CREATE TABLE IF NOT EXISTS `t1` (\n  `c1` int NOT NULL\n)",
 			$this->prepare()->ifNotExists()->sql()
 		);
@@ -72,10 +72,20 @@ final class CreateTableTest extends TestCase
 
 	public function testOrReplace() : void
 	{
-		$this->assertEquals(
+		self::assertSame(
 			"CREATE OR REPLACE TABLE `t1` (\n  `c1` int NOT NULL\n)",
 			$this->prepare()->orReplace()->sql()
 		);
+	}
+
+	public function testOrReplaceConflictsWithIfNotExists() : void
+	{
+		$this->prepare()->ifNotExists()->orReplace();
+		$this->expectException(\LogicException::class);
+		$this->expectExceptionMessage(
+			'Clauses OR REPLACE and IF NOT EXISTS can not be used together'
+		);
+		$this->createTable->sql();
 	}
 
 	public function testIfNotExistsConflictsWithOrReplace() : void
@@ -90,7 +100,7 @@ final class CreateTableTest extends TestCase
 
 	public function testTemporary() : void
 	{
-		$this->assertEquals(
+		self::assertSame(
 			"CREATE TEMPORARY TABLE `t1` (\n  `c1` int NOT NULL\n)",
 			$this->prepare()->temporary()->sql()
 		);
@@ -103,7 +113,7 @@ final class CreateTableTest extends TestCase
 			->definition(static function (TableDefinition $definition) : void {
 				$definition->column('c1')->int(11);
 			});
-		$this->assertEquals(0, $statement->run());
+		self::assertSame(0, $statement->run());
 		$this->resetDatabase();
 		$this->expectException(\mysqli_sql_exception::class);
 		$this->expectExceptionMessage("Table 't1' already exists");

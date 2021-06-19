@@ -3,12 +3,12 @@
 use Framework\Database\Definition\Table\Indexes\Keys\FulltextKey;
 use Tests\Database\TestCase;
 
-class FulltextKeyTest extends TestCase
+final class FulltextKeyTest extends TestCase
 {
 	public function testType() : void
 	{
 		$index = new FulltextKey(static::$database, null, 'id');
-		$this->assertEquals(
+		self::assertSame(
 			' FULLTEXT KEY (`id`)',
 			$index->sql()
 		);

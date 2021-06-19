@@ -14,11 +14,11 @@ final class StatementTest extends TestCase
 
 	public function testLimit() : void
 	{
-		$this->assertNull($this->statement->renderLimit());
+		self::assertNull($this->statement->renderLimit());
 		$this->statement->limit(10);
-		$this->assertEquals(' LIMIT 10', $this->statement->renderLimit());
+		self::assertSame(' LIMIT 10', $this->statement->renderLimit());
 		$this->statement->limit(10, 20);
-		$this->assertEquals(' LIMIT 10 OFFSET 20', $this->statement->renderLimit());
+		self::assertSame(' LIMIT 10 OFFSET 20', $this->statement->renderLimit());
 	}
 
 	public function testLimitLessThanOne() : void
@@ -39,19 +39,19 @@ final class StatementTest extends TestCase
 
 	public function testSubquery() : void
 	{
-		$this->assertEquals('(select database())', $this->statement->subquery(static function () {
+		self::assertSame('(select database())', $this->statement->subquery(static function () {
 			return 'select database()';
 		}));
-		$this->assertEquals(
+		self::assertSame(
 			'(select * from posts)',
 			$this->statement->subquery(static function () {
 				return 'select * from posts';
 			})
 		);
-		$this->assertEquals(
+		self::assertSame(
 			'(select * from `posts`)',
-			$this->statement->subquery(function ($database) {
-				$this->assertInstanceOf(Database::class, $database);
+			$this->statement->subquery(static function ($database) {
+				self::assertInstanceOf(Database::class, $database);
 				return 'select * from ' . $database->protectIdentifier('posts');
 			})
 		);
@@ -59,8 +59,8 @@ final class StatementTest extends TestCase
 
 	public function testRenderIdentifier() : void
 	{
-		$this->assertEquals('`name```', $this->statement->renderIdentifier('name`'));
-		$this->assertEquals(
+		self::assertSame('`name```', $this->statement->renderIdentifier('name`'));
+		self::assertSame(
 			'(SELECT * from `foo`)',
 			$this->statement->renderIdentifier(static function ($database) {
 				return 'SELECT * from ' . $database->protectIdentifier('foo');
@@ -68,20 +68,20 @@ final class StatementTest extends TestCase
 		);
 	}
 
-	public function testRenderAliasedidentifier() : void
+	public function testRenderAliasedIdentifier() : void
 	{
-		$this->assertEquals('`name```', $this->statement->renderAliasedIdentifier('name`'));
-		$this->assertEquals(
+		self::assertSame('`name```', $this->statement->renderAliasedIdentifier('name`'));
+		self::assertSame(
 			'(SELECT * from `foo`)',
 			$this->statement->renderAliasedIdentifier(static function ($database) {
 				return 'SELECT * from ' . $database->protectIdentifier('foo');
 			})
 		);
-		$this->assertEquals(
+		self::assertSame(
 			'`name``` AS `foo`',
 			$this->statement->renderAliasedIdentifier(['foo' => 'name`'])
 		);
-		$this->assertEquals(
+		self::assertSame(
 			"(SELECT id from table where username = '\\'hack') AS `foo`",
 			$this->statement->renderAliasedIdentifier([
 				'foo' => static function ($database) {
@@ -92,43 +92,44 @@ final class StatementTest extends TestCase
 		);
 		$this->expectException(\InvalidArgumentException::class);
 		$this->expectExceptionMessage('Aliased column must have only 1 key');
+		// @phpstan-ignore-next-line
 		$this->statement->renderAliasedIdentifier(['foo' => 'name', 'bar']);
 	}
 
 	public function testToString() : void
 	{
-		$this->assertEquals('SQL', (string) $this->statement);
+		self::assertSame('SQL', (string) $this->statement);
 	}
 
 	public function testOptions() : void
 	{
-		$this->assertNull($this->statement->renderOptions());
+		self::assertNull($this->statement->renderOptions());
 		$this->statement->options('foo');
-		$this->assertEquals('foo', $this->statement->renderOptions());
+		self::assertSame('foo', $this->statement->renderOptions());
 		$this->statement->options('bar', 'baz');
-		$this->assertEquals('bar baz', $this->statement->renderOptions());
+		self::assertSame('bar baz', $this->statement->renderOptions());
 	}
 
 	public function testReset() : void
 	{
-		$this->assertNull($this->statement->renderOptions());
+		self::assertNull($this->statement->renderOptions());
 		$this->statement->options('foo');
-		$this->assertEquals('foo', $this->statement->renderOptions());
+		self::assertSame('foo', $this->statement->renderOptions());
 		$this->statement->reset('where');
-		$this->assertEquals('foo', $this->statement->renderOptions());
+		self::assertSame('foo', $this->statement->renderOptions());
 		$this->statement->reset('options');
-		$this->assertNull($this->statement->renderOptions());
+		self::assertNull($this->statement->renderOptions());
 		$this->statement->options('foo');
-		$this->assertEquals('foo', $this->statement->renderOptions());
+		self::assertSame('foo', $this->statement->renderOptions());
 		$this->statement->reset();
-		$this->assertNull($this->statement->renderOptions());
+		self::assertNull($this->statement->renderOptions());
 	}
 
 	public function testRenderAssignment() : void
 	{
-		$this->assertEquals('`id` = 1', $this->statement->renderAssignment('id', 1));
-		$this->assertEquals("`id` = '1'", $this->statement->renderAssignment('id', '1'));
-		$this->assertEquals(
+		self::assertSame('`id` = 1', $this->statement->renderAssignment('id', 1));
+		self::assertSame("`id` = '1'", $this->statement->renderAssignment('id', '1'));
+		self::assertSame(
 			'`id` = (select 1)',
 			$this->statement->renderAssignment('id', static function () {
 				return 'select 1';
@@ -138,7 +139,7 @@ final class StatementTest extends TestCase
 
 	public function testMergeExpressions() : void
 	{
-		$this->assertEquals(['a'], $this->statement->mergeExpressions('a', []));
-		$this->assertEquals(['a', 'a'], $this->statement->mergeExpressions('a', ['a']));
+		self::assertSame(['a'], $this->statement->mergeExpressions('a', []));
+		self::assertSame(['a', 'a'], $this->statement->mergeExpressions('a', ['a']));
 	}
 }

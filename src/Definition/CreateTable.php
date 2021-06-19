@@ -11,6 +11,13 @@ use LogicException;
  */
 class CreateTable extends Statement
 {
+	/**
+	 * Adds a OR REPLACE part.
+	 *
+	 * WARNING: This feature is MariaDB only. It is not compatible with MySQL.
+	 *
+	 * @return $this
+	 */
 	public function orReplace()
 	{
 		$this->sql['or_replace'] = true;
@@ -22,9 +29,17 @@ class CreateTable extends Statement
 		if ( ! isset($this->sql['or_replace'])) {
 			return null;
 		}
+		if (isset($this->sql['if_not_exists'])) {
+			throw new LogicException(
+				'Clauses OR REPLACE and IF NOT EXISTS can not be used together'
+			);
+		}
 		return ' OR REPLACE';
 	}
 
+	/**
+	 * @return $this
+	 */
 	public function temporary()
 	{
 		$this->sql['temporary'] = true;
@@ -39,6 +54,9 @@ class CreateTable extends Statement
 		return ' TEMPORARY';
 	}
 
+	/**
+	 * @return $this
+	 */
 	public function ifNotExists()
 	{
 		$this->sql['if_not_exists'] = true;
@@ -58,9 +76,14 @@ class CreateTable extends Statement
 		return ' IF NOT EXISTS';
 	}
 
-	public function table(string $table_name)
+	/**
+	 * @param string $tableName
+	 *
+	 * @return $this
+	 */
+	public function table(string $tableName)
 	{
-		$this->sql['table'] = $table_name;
+		$this->sql['table'] = $tableName;
 		return $this;
 	}
 
@@ -72,6 +95,11 @@ class CreateTable extends Statement
 		throw new LogicException('TABLE name must be set');
 	}
 
+	/**
+	 * @param callable $definition
+	 *
+	 * @return $this
+	 */
 	public function definition(callable $definition)
 	{
 		$this->sql['definition'] = $definition;

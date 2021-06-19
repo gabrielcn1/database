@@ -6,7 +6,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
 	protected static ?Database $database = null;
 
-	public function __construct(...$params)
+	public function __construct(mixed ...$params)
 	{
 		$this->setDatabase();
 		parent::__construct(...$params);
@@ -43,18 +43,18 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 		$this->dropDummyData();
 		static::$database->exec(
 			<<<'SQL'
-					CREATE TABLE `t1` (
-					  `c1` INT(11) AUTO_INCREMENT PRIMARY KEY,
-					  `c2` VARCHAR(255)
-					)
+				CREATE TABLE `t1` (
+				  `c1` INT(11) AUTO_INCREMENT PRIMARY KEY,
+				  `c2` VARCHAR(255)
+				)
 				SQL
 		);
 		static::$database->exec(
 			<<<'SQL'
-					CREATE TABLE `t2` (
-					  `c1` INT(11) AUTO_INCREMENT PRIMARY KEY,
-					  `c2` VARCHAR(255)
-					)
+				CREATE TABLE `t2` (
+				  `c1` INT(11) AUTO_INCREMENT PRIMARY KEY,
+				  `c2` VARCHAR(255)
+				)
 				SQL
 		);
 		static::$database->exec(

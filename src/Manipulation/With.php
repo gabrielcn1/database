@@ -37,7 +37,7 @@ class With extends Statement
 	 * Adds a table reference.
 	 *
 	 * @param Closure|string $table
-	 * @param Closure        $alias
+	 * @param Closure $alias
 	 *
 	 * @see https://mariadb.com/kb/en/library/non-recursive-common-table-expressions-overview/
 	 * @see https://mariadb.com/kb/en/library/recursive-common-table-expressions-overview/
@@ -92,6 +92,11 @@ class With extends Statement
 		return $this->sql['select'];
 	}
 
+	/**
+	 * Renders the WITH statement.
+	 *
+	 * @return string
+	 */
 	public function sql() : string
 	{
 		$sql = 'WITH' . \PHP_EOL;

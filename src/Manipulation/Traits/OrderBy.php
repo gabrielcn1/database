@@ -12,8 +12,8 @@ trait OrderBy
 	/**
 	 * Appends columns to the ORDER BY clause.
 	 *
-	 * @param Closure|string $column
-	 * @param Closure|string ...$columns
+	 * @param Closure|string $column The column name or a subquery
+	 * @param Closure|string ...$columns Extra column names and/or subqueries
 	 *
 	 * @return $this
 	 */
@@ -25,8 +25,8 @@ trait OrderBy
 	/**
 	 * Appends columns with the ASC direction to the ORDER BY clause.
 	 *
-	 * @param Closure|string $column
-	 * @param Closure|string ...$columns
+	 * @param Closure|string $column The column name or a subquery
+	 * @param Closure|string ...$columns Extra column names and/or subqueries
 	 *
 	 * @return $this
 	 */
@@ -38,8 +38,8 @@ trait OrderBy
 	/**
 	 * Appends columns with the DESC direction to the ORDER BY clause.
 	 *
-	 * @param Closure|string $column
-	 * @param Closure|string ...$columns
+	 * @param Closure|string $column The column name or a subquery
+	 * @param Closure|string ...$columns Extra column names and/or subqueries
 	 *
 	 * @return $this
 	 */
@@ -48,6 +48,15 @@ trait OrderBy
 		return $this->addOrderBy($column, $columns, 'DESC');
 	}
 
+	/**
+	 * Adds a ORDER BY expression.
+	 *
+	 * @param Closure|string $column The column name or a subquery
+	 * @param array<int,Closure|string> $columns Extra column names and/or subqueries
+	 * @param string|null $direction `ASC`, `DESC` or null for none
+	 *
+	 * @return $this
+	 */
 	private function addOrderBy(Closure | string $column, array $columns, ?string $direction)
 	{
 		$columns = $this->mergeExpressions($column, $columns);
@@ -60,6 +69,11 @@ trait OrderBy
 		return $this;
 	}
 
+	/**
+	 * Renders the ORDER BY clause.
+	 *
+	 * @return string|null The ORDER BY clause or null if it was not set
+	 */
 	protected function renderOrderBy() : ?string
 	{
 		if ( ! isset($this->sql['order_by'])) {

@@ -7,17 +7,17 @@ final class DecimalLengthTest extends TestCase
 	public function testLength() : void
 	{
 		$column = new DecimalLengthMock(static::$database);
-		$this->assertEquals(
+		self::assertSame(
 			' mock NOT NULL',
 			$column->sql()
 		);
 		$column = new DecimalLengthMock(static::$database, 12);
-		$this->assertEquals(
+		self::assertSame(
 			' mock(12) NOT NULL',
 			$column->sql()
 		);
 		$column = new DecimalLengthMock(static::$database, 16, 4);
-		$this->assertEquals(
+		self::assertSame(
 			' mock(16,4) NOT NULL',
 			$column->sql()
 		);

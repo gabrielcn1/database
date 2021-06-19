@@ -13,8 +13,8 @@ abstract class Statement extends \Framework\Database\Statement
 	/**
 	 * Sets the statement options.
 	 *
-	 * @param string $option  One of the OPT_* constants
-	 * @param mixed  $options Each option value must be one of the OPT_* constants
+	 * @param string $option One of the OPT_* constants
+	 * @param string ...$options Each option value must be one of the OPT_* constants
 	 *
 	 * @return $this
 	 */
@@ -28,6 +28,11 @@ abstract class Statement extends \Framework\Database\Statement
 		return $this;
 	}
 
+	/**
+	 * Tells if the statement has options set.
+	 *
+	 * @return bool
+	 */
 	protected function hasOptions() : bool
 	{
 		return isset($this->sql['options']);
@@ -39,7 +44,7 @@ abstract class Statement extends \Framework\Database\Statement
 	 * Returns a SQL part between parentheses.
 	 *
 	 * @param Closure $subquery A \Closure having the current Manipulation instance as first
-	 *                          argument. The returned value must be scalar
+	 * argument. The returned value must be scalar
 	 *
 	 * @see https://mariadb.com/kb/en/library/subqueries/
 	 * @see https://mariadb.com/kb/en/library/built-in-functions/
@@ -54,7 +59,7 @@ abstract class Statement extends \Framework\Database\Statement
 	/**
 	 * Sets the LIMIT clause.
 	 *
-	 * @param int      $limit
+	 * @param int $limit
 	 * @param int|null $offset
 	 *
 	 * @see https://mariadb.com/kb/en/library/limit/
@@ -110,8 +115,8 @@ abstract class Statement extends \Framework\Database\Statement
 	/**
 	 * Renders a column part with an optional alias name, AS clause.
 	 *
-	 * @param array|Closure|string $column The column name, a subquery or an array where the index
-	 *                                     is the alias and the value is the column/subquery
+	 * @param array<string,Closure|string>|Closure|string $column The column name,
+	 * a subquery or an array where the index is the alias and the value is the column/subquery
 	 *
 	 * @return string
 	 */
@@ -133,9 +138,9 @@ abstract class Statement extends \Framework\Database\Statement
 	 *
 	 * @param Closure|float|int|string|null $value \Closure for subquery, other types to quote
 	 *
-	 * @return string
+	 * @return float|int|string
 	 */
-	protected function renderValue(Closure | float | int | string | null $value) : string
+	protected function renderValue(Closure | float | int | string | null $value) : float | int | string
 	{
 		return $value instanceof Closure
 			? $this->subquery($value)
@@ -145,7 +150,7 @@ abstract class Statement extends \Framework\Database\Statement
 	/**
 	 * Renders an assignment part.
 	 *
-	 * @param string                        $identifier Identifier/column name
+	 * @param string $identifier Identifier/column name
 	 * @param Closure|float|int|string|null $expression Expression/value
 	 *
 	 * @see renderValue
@@ -153,8 +158,10 @@ abstract class Statement extends \Framework\Database\Statement
 	 *
 	 * @return string
 	 */
-	protected function renderAssignment(string $identifier, Closure | float | int | string | null $expression) : string
-	{
+	protected function renderAssignment(
+		string $identifier,
+		Closure | float | int | string | null $expression
+	) : string {
 		return $this->database->protectIdentifier($identifier)
 			. ' = ' . $this->renderValue($expression);
 	}
@@ -162,7 +169,7 @@ abstract class Statement extends \Framework\Database\Statement
 	/**
 	 * Used when a function requires at least one expression (identifier or value).
 	 *
-	 * @param mixed         $expression
+	 * @param mixed $expression
 	 * @param array|mixed[] $expressions
 	 *
 	 * @return array|mixed[]

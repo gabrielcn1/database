@@ -15,11 +15,13 @@ use Framework\Database\Manipulation\Replace;
 use Framework\Database\Manipulation\Select;
 use Framework\Database\Manipulation\Update;
 use Framework\Database\Manipulation\With;
+use Framework\Log\Logger;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\Language;
 use LogicException;
 use mysqli;
 use mysqli_sql_exception;
+use RuntimeException;
 
 /**
  * Class Database.
@@ -35,6 +37,8 @@ class Database
 	 * Custom configs merged with the Base Connection configurations.
 	 *
 	 * @see makeConfig
+	 *
+	 * @var array<string,mixed>
 	 */
 	protected array $config = [];
 	/**
@@ -50,6 +54,7 @@ class Database
 	 */
 	protected bool $inTransaction = false;
 	protected string $lastQuery = '';
+	protected ?Logger $logger;
 	/**
 	 * The functions instance.
 	 *
@@ -63,10 +68,11 @@ class Database
 	 * Database constructor.
 	 *
 	 * @param array|mixed[]|string $username
-	 * @param string|null          $password
-	 * @param string|null          $schema
-	 * @param string               $host
-	 * @param int                  $port
+	 * @param string|null $password
+	 * @param string|null $schema
+	 * @param string $host
+	 * @param int $port
+	 * @param Logger|null $logger
 	 *
 	 * @see Database::makeConfig
 	 *
@@ -77,13 +83,10 @@ class Database
 		string $password = null,
 		string $schema = null,
 		string $host = 'localhost',
-		int $port = 3306
+		int $port = 3306,
+		Logger $logger = null
 	) {
-		\mysqli_report(\MYSQLI_REPORT_ALL & ~\MYSQLI_REPORT_INDEX);
-		$this->mysqli = new mysqli();
-		$this->mysqli->options(\MYSQLI_OPT_INT_AND_FLOAT_NATIVE, 1);
-		$this->mysqli->options(\MYSQLI_OPT_CONNECT_TIMEOUT, 10);
-		$this->mysqli->options(\MYSQLI_OPT_LOCAL_INFILE, 1);
+		$this->logger = $logger;
 		$this->connect($username, $password, $schema, $host, $port);
 	}
 
@@ -104,6 +107,13 @@ class Database
 			throw new LogicException("Property not allowed: {$name}");
 		}
 		throw new LogicException("Property not found: {$name}");
+	}
+
+	protected function log(string $message, int $level = Logger::ERROR) : void
+	{
+		if ($this->logger) {
+			$this->logger->log($level, $message);
+		}
 	}
 
 	/**
@@ -136,15 +146,21 @@ class Database
 				'cipher' => null,
 			],
 			'failover' => [],
+			'options' => [
+				\MYSQLI_OPT_CONNECT_TIMEOUT => 10,
+				\MYSQLI_OPT_INT_AND_FLOAT_NATIVE => true,
+				\MYSQLI_OPT_LOCAL_INFILE => 1,
+			],
+			'report' => \MYSQLI_REPORT_ALL & ~\MYSQLI_REPORT_INDEX,
 		], $config);
 	}
 
 	/**
 	 * @param mixed[]|string $username
-	 * @param string|null    $password
-	 * @param string|null    $schema
-	 * @param string         $host
-	 * @param int            $port
+	 * @param string|null $password
+	 * @param string|null $schema
+	 * @param string $host
+	 * @param int $port
 	 *
 	 * @throws Exception
 	 *
@@ -166,50 +182,57 @@ class Database
 				'schema' => $schema,
 			];
 		}
-		$username = $this->makeConfig($username);
+		$config = $this->makeConfig($username);
 		if ($this->failoverIndex === null) {
-			$this->config = $username;
+			$this->config = $config;
+		}
+		\mysqli_report($config['report']);
+		$this->mysqli = new mysqli();
+		foreach ($config['options'] as $option => $value) {
+			$this->mysqli->options($option, $value);
 		}
 		try {
 			$flags = null;
-			if ($username['ssl']['enabled'] === true) {
+			if ($config['ssl']['enabled'] === true) {
 				$this->mysqli->ssl_set(
-					$username['ssl']['key'],
-					$username['ssl']['cert'],
-					$username['ssl']['ca'],
-					$username['ssl']['capath'],
-					$username['ssl']['cipher']
+					$config['ssl']['key'],
+					$config['ssl']['cert'],
+					$config['ssl']['ca'],
+					$config['ssl']['capath'],
+					$config['ssl']['cipher']
 				);
 				$flags += \MYSQLI_CLIENT_SSL;
-				if ($username['ssl']['verify'] === false) {
+				if ($config['ssl']['verify'] === false) {
 					$flags += \MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
 				}
 			}
 			$this->mysqli->real_connect(
-				$username['host'],
-				$username['username'],
-				$username['password'],
-				$username['schema'],
-				$username['port'],
-				$username['socket'],
+				$config['host'],
+				$config['username'],
+				$config['password'],
+				$config['schema'],
+				$config['port'],
+				$config['socket'],
 				$flags
 			);
 		} catch (Exception $exception) {
+			$log = "Database: Connection failed for '{$config['username']}'@'{$config['host']}'";
+			$log .= $this->failoverIndex !== null ? " (failover: {$this->failoverIndex})" : '';
+			$this->log($log);
 			$this->failoverIndex = $this->failoverIndex === null
 				? 0
 				: $this->failoverIndex + 1;
-			if (empty($username['failover'][$this->failoverIndex])) {
+			if (empty($config['failover'][$this->failoverIndex])) {
 				throw $exception;
 			}
-			$username = \array_replace_recursive(
-				$username,
-				$username['failover'][$this->failoverIndex]
+			$config = \array_replace_recursive(
+				$config,
+				$config['failover'][$this->failoverIndex]
 			);
-			// TODO: Log connection error
-			$this->connect($username);
+			$this->connect($config);
 		}
-		$this->setCollations($username['charset'], $username['collation']);
-		$this->setTimezone($username['timezone']);
+		$this->setCollations($config['charset'], $config['collation']);
+		$this->setTimezone($config['timezone']);
 		return $this;
 	}
 
@@ -265,15 +288,15 @@ class Database
 	/**
 	 * Call a CREATE SCHEMA statement.
 	 *
-	 * @param string|null $schema_name
+	 * @param string|null $schemaName
 	 *
 	 * @return CreateSchema
 	 */
-	public function createSchema(string $schema_name = null) : CreateSchema
+	public function createSchema(string $schemaName = null) : CreateSchema
 	{
 		$instance = new CreateSchema($this);
-		if ($schema_name !== null) {
-			$instance->schema($schema_name);
+		if ($schemaName !== null) {
+			$instance->schema($schemaName);
 		}
 		return $instance;
 	}
@@ -281,15 +304,15 @@ class Database
 	/**
 	 * Call a DROP SCHEMA statement.
 	 *
-	 * @param string|null $schema_name
+	 * @param string|null $schemaName
 	 *
 	 * @return DropSchema
 	 */
-	public function dropSchema(string $schema_name = null) : DropSchema
+	public function dropSchema(string $schemaName = null) : DropSchema
 	{
 		$instance = new DropSchema($this);
-		if ($schema_name !== null) {
-			$instance->schema($schema_name);
+		if ($schemaName !== null) {
+			$instance->schema($schemaName);
 		}
 		return $instance;
 	}
@@ -297,15 +320,15 @@ class Database
 	/**
 	 * Call a ALTER SCHEMA statement.
 	 *
-	 * @param string|null $schema_name
+	 * @param string|null $schemaName
 	 *
 	 * @return AlterSchema
 	 */
-	public function alterSchema(string $schema_name = null) : AlterSchema
+	public function alterSchema(string $schemaName = null) : AlterSchema
 	{
 		$instance = new AlterSchema($this);
-		if ($schema_name !== null) {
-			$instance->schema($schema_name);
+		if ($schemaName !== null) {
+			$instance->schema($schemaName);
 		}
 		return $instance;
 	}
@@ -313,15 +336,15 @@ class Database
 	/**
 	 * Call a CREATE TABLE statement.
 	 *
-	 * @param string|null $table_name
+	 * @param string|null $tableName
 	 *
 	 * @return CreateTable
 	 */
-	public function createTable(string $table_name = null) : CreateTable
+	public function createTable(string $tableName = null) : CreateTable
 	{
 		$instance = new CreateTable($this);
-		if ($table_name !== null) {
-			$instance->table($table_name);
+		if ($tableName !== null) {
+			$instance->table($tableName);
 		}
 		return $instance;
 	}
@@ -330,7 +353,7 @@ class Database
 	 * Call a DROP TABLE statement.
 	 *
 	 * @param string|null $table
-	 * @param mixed       $tables
+	 * @param string ...$tables
 	 *
 	 * @return DropTable
 	 */
@@ -346,15 +369,15 @@ class Database
 	/**
 	 * Call a ALTER TABLE statement.
 	 *
-	 * @param string|null $table_name
+	 * @param string|null $tableName
 	 *
 	 * @return AlterTable
 	 */
-	public function alterTable(string $table_name = null) : AlterTable
+	public function alterTable(string $tableName = null) : AlterTable
 	{
 		$instance = new AlterTable($this);
-		if ($table_name !== null) {
-			$instance->table($table_name);
+		if ($tableName !== null) {
+			$instance->table($tableName);
 		}
 		return $instance;
 	}
@@ -362,8 +385,8 @@ class Database
 	/**
 	 * Call a DELETE statement.
 	 *
-	 * @param array|Closure|string|null $reference
-	 * @param array|Closure|string      ...$references
+	 * @param array<string,Closure|string>|Closure|string|null $reference
+	 * @param array<string,Closure|string>|Closure|string ...$references
 	 *
 	 * @return Delete
 	 */
@@ -381,15 +404,15 @@ class Database
 	/**
 	 * Call a INSERT statement.
 	 *
-	 * @param string|null $into_table
+	 * @param string|null $intoTable
 	 *
 	 * @return Insert
 	 */
-	public function insert(string $into_table = null) : Insert
+	public function insert(string $intoTable = null) : Insert
 	{
 		$instance = new Insert($this);
-		if ($into_table !== null) {
-			$instance->into($into_table);
+		if ($intoTable !== null) {
+			$instance->into($intoTable);
 		}
 		return $instance;
 	}
@@ -397,15 +420,15 @@ class Database
 	/**
 	 * Call a LOAD DATA statement.
 	 *
-	 * @param string|null $into_table
+	 * @param string|null $intoTable
 	 *
 	 * @return LoadData
 	 */
-	public function loadData(string $into_table = null) : LoadData
+	public function loadData(string $intoTable = null) : LoadData
 	{
 		$instance = new LoadData($this);
-		if ($into_table !== null) {
-			$instance->intoTable($into_table);
+		if ($intoTable !== null) {
+			$instance->intoTable($intoTable);
 		}
 		return $instance;
 	}
@@ -413,15 +436,15 @@ class Database
 	/**
 	 * Call a REPLACE statement.
 	 *
-	 * @param string|null $into_table
+	 * @param string|null $intoTable
 	 *
 	 * @return Replace
 	 */
-	public function replace(string $into_table = null) : Replace
+	public function replace(string $intoTable = null) : Replace
 	{
 		$instance = new Replace($this);
-		if ($into_table !== null) {
-			$instance->into($into_table);
+		if ($intoTable !== null) {
+			$instance->into($intoTable);
 		}
 		return $instance;
 	}
@@ -429,8 +452,8 @@ class Database
 	/**
 	 * Call a SELECT statement.
 	 *
-	 * @param array|Closure|string|null $reference
-	 * @param array|Closure|string      ...$references
+	 * @param array<string,Closure|string>|Closure|string|null $reference
+	 * @param array<string,Closure|string>|Closure|string ...$references
 	 *
 	 * @return Select
 	 */
@@ -448,8 +471,8 @@ class Database
 	/**
 	 * Call a UPDATE statement.
 	 *
-	 * @param array|Closure|string|null $reference
-	 * @param array|Closure|string      ...$references
+	 * @param array<string,Closure|string>|Closure|string|null $reference
+	 * @param array<string,Closure|string>|Closure|string ...$references
 	 *
 	 * @return Update
 	 */
@@ -491,7 +514,10 @@ class Database
 		$this->lastQuery = $statement;
 		$this->mysqli->real_query($statement);
 		if ($this->mysqli->field_count) {
-			$this->mysqli->store_result()->free();
+			$result = $this->mysqli->store_result();
+			if ($result) {
+				$result->free();
+			}
 		}
 		return $this->mysqli->affected_rows;
 	}
@@ -502,21 +528,29 @@ class Database
 	 * Must be: SELECT, SHOW, DESCRIBE or EXPLAIN
 	 *
 	 * @param string $statement
+	 * @param bool $buffered
+	 *
+	 * @see https://www.php.net/manual/en/mysqlinfo.concepts.buffering.php
 	 *
 	 * @throws InvalidArgumentException if $statement does not return result
 	 *
 	 * @return Result
 	 */
-	public function query(#[Language('SQL')] string $statement) : Result
-	{
+	public function query(
+		#[Language('SQL')] string $statement,
+		bool $buffered = true
+	) : Result {
 		$this->lastQuery = $statement;
-		$result = $this->mysqli->query($statement);
+		$result = $this->mysqli->query(
+			$statement,
+			$buffered ? \MYSQLI_STORE_RESULT : \MYSQLI_USE_RESULT
+		);
 		if (\is_bool($result)) {
 			throw new InvalidArgumentException(
 				"Statement does not return result: {$statement}"
 			);
 		}
-		return new Result($result);
+		return new Result($result, $buffered);
 	}
 
 	/**
@@ -524,11 +558,17 @@ class Database
 	 *
 	 * @param string $statement
 	 *
+	 * @throws RuntimeException if prepared statement fail
+	 *
 	 * @return PreparedStatement
 	 */
 	public function prepare(#[Language('SQL')] string $statement) : PreparedStatement
 	{
-		return new PreparedStatement($this->mysqli->prepare($statement));
+		$prepared = $this->mysqli->prepare($statement);
+		if ($prepared === false) {
+			throw new RuntimeException('Prepared statement failed: ' . $statement);
+		}
+		return new PreparedStatement($prepared);
 	}
 
 	/**
@@ -536,7 +576,7 @@ class Database
 	 *
 	 * @param callable $statements
 	 *
-	 * @throws Exception      if statements fail
+	 * @throws Exception if statements fail
 	 * @throws LogicException if transaction already is active
 	 */
 	public function transaction(callable $statements) : void
@@ -599,20 +639,20 @@ class Database
 	 *
 	 * @throws InvalidArgumentException For invalid value type
 	 *
-	 * @return float|int|string If the value is null, returns a string containing the word
-	 *                          "NULL". If is false, "FALSE". If is true, "TRUE". If is a
-	 *                          string, returns the quoted string. The types int or float
-	 *                          returns the same input value.
+	 * @return float|int|string If the value is null, returns a string containing
+	 * the word "NULL". If is false, "FALSE". If is true, "TRUE". If is a string,
+	 * returns the quoted string. The types int or float returns the same input value.
 	 */
 	public function quote(float | bool | int | string | null $value) : float | int | string
 	{
 		$type = \gettype($value);
 		if ($type === 'string') {
+			// @phpstan-ignore-next-line
 			$value = $this->mysqli->real_escape_string($value);
 			return "'{$value}'";
 		}
 		if ($type === 'integer' || $type === 'double') {
-			return $value;
+			return $value; // @phpstan-ignore-line
 		}
 		if ($type === 'boolean') {
 			return $value ? 'TRUE' : 'FALSE';

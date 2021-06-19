@@ -5,6 +5,7 @@ test:php:
   stage: test
   cache:
     paths:
+      - build/
       - vendor/
   services:
     - mariadb
@@ -15,18 +16,11 @@ test:php:
   before_script:
     - composer install
   script:
-    # composer.json normalization
     - composer normalize --dry-run --indent-size=1 --indent-style=tab
-    # Check if syntax errors was fixed with php-cs-fixer
     - vendor/bin/php-cs-fixer fix --diff --dry-run --verbose
-    # Analyse code with PHPStan
-    # - vendor/bin/phpstan analyse
-    # PHPMD
-    # - vendor/bin/phpmd src/ text phpmd.xml
-    # - vendor/bin/phpmd tests/ text phpmd.xml
-    # Run PHPUnit
+    # - vendor/bin/phpmd src xml phpmd.xml
+    - vendor/bin/phpstan analyse -vvv
     - vendor/bin/phpunit --colors=never
-    # Run phpDocumentor
     - phpdoc
   artifacts:
     paths:
@@ -38,7 +32,9 @@ test:php:mysql:
   extends: test:php
   services:
     - name: mysql
-      command: ["--default-authentication-plugin=mysql_native_password"]
+      command:
+        - --default-authentication-plugin=mysql_native_password
+        - --local-infile=true
   variables:
     MYSQL_HOST: mysql
     DB_HOST: mysql
@@ -58,6 +54,6 @@ pages:
     - curl -sS https://the-framework.gitlab.io/redirect.php | php
   artifacts:
     paths:
-      - public
+      - public/
   only:
     - master

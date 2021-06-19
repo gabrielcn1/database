@@ -10,6 +10,9 @@ use LogicException;
  */
 class DropSchema extends Statement
 {
+	/**
+	 * @return $this
+	 */
 	public function ifExists()
 	{
 		$this->sql['if_exists'] = true;
@@ -24,9 +27,14 @@ class DropSchema extends Statement
 		return ' IF EXISTS';
 	}
 
-	public function schema(string $schema_name)
+	/**
+	 * @param string $schemaName
+	 *
+	 * @return $this
+	 */
+	public function schema(string $schemaName)
 	{
-		$this->sql['schema'] = $schema_name;
+		$this->sql['schema'] = $schemaName;
 		return $this;
 	}
 

@@ -2,17 +2,17 @@
 
 use Tests\Database\TestCase;
 
-class ConstraintTest extends TestCase
+final class ConstraintTest extends TestCase
 {
 	public function testConstraint() : void
 	{
 		$index = new ConstraintMock(static::$database, null, 'id');
-		$this->assertEquals(
+		self::assertSame(
 			' constraint_mock (`id`)',
 			$index->sql()
 		);
 		$index->constraint('foo');
-		$this->assertEquals(
+		self::assertSame(
 			' CONSTRAINT `foo` constraint_mock (`id`)',
 			$index->sql()
 		);

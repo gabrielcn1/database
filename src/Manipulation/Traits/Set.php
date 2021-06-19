@@ -1,5 +1,7 @@
 <?php namespace Framework\Database\Manipulation\Traits;
 
+use Closure;
+
 /**
  * Trait Set.
  */
@@ -8,7 +10,7 @@ trait Set
 	/**
 	 * Sets the SET clause.
 	 *
-	 * @param array $columns Array of columns => values
+	 * @param array<string,Closure|float|int|string|null> $columns Array of columns => values
 	 *
 	 * @return $this
 	 */
@@ -18,6 +20,11 @@ trait Set
 		return $this;
 	}
 
+	/**
+	 * Renders the SET clause.
+	 *
+	 * @return string|null The SET clause null if it was not set
+	 */
 	protected function renderSet() : ?string
 	{
 		if ( ! $this->hasSet()) {
@@ -31,6 +38,11 @@ trait Set
 		return " SET {$set}";
 	}
 
+	/**
+	 * Tells if the SET clause was set.
+	 *
+	 * @return bool True if was set, otherwise false
+	 */
 	protected function hasSet() : bool
 	{
 		return isset($this->sql['set']);

@@ -3,12 +3,12 @@
 use Framework\Database\Definition\Table\Indexes\Keys\SpatialKey;
 use Tests\Database\TestCase;
 
-class SpatialKeyTest extends TestCase
+final class SpatialKeyTest extends TestCase
 {
 	public function testType() : void
 	{
 		$index = new SpatialKey(static::$database, null, 'id');
-		$this->assertEquals(
+		self::assertSame(
 			' SPATIAL KEY (`id`)',
 			$index->sql()
 		);

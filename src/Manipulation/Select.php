@@ -181,15 +181,17 @@ class Select extends Statement
 	 *
 	 * Generally used with the FROM clause as column names.
 	 *
-	 * @param array|Closure|string $expression
-	 * @param array|Closure|string ...$expressions
+	 * @param array<string,Closure|string>|Closure|string $expression
+	 * @param array<string,Closure|string>|Closure|string ...$expressions
 	 *
 	 * @see https://mariadb.com/kb/en/library/select/#select-expressions
 	 *
 	 * @return $this
 	 */
-	public function expressions(array | Closure | string $expression, array | Closure | string ...$expressions)
-	{
+	public function expressions(
+		array | Closure | string $expression,
+		array | Closure | string ...$expressions
+	) {
 		$expressions = $this->mergeExpressions($expression, $expressions);
 		foreach ($expressions as $expression) {
 			$this->sql['expressions'][] = $expression;
@@ -200,8 +202,8 @@ class Select extends Statement
 	/**
 	 * Alias of the expressions method.
 	 *
-	 * @param array|Closure|string $expression
-	 * @param array|Closure|string ...$expressions
+	 * @param array<string,Closure|string>|Closure|string $expression
+	 * @param array<string,Closure|string>|Closure|string ...$expressions
 	 *
 	 * @return $this
 	 */
@@ -228,7 +230,7 @@ class Select extends Statement
 	/**
 	 * Sets the LIMIT clause.
 	 *
-	 * @param int      $limit
+	 * @param int $limit
 	 * @param int|null $offset
 	 *
 	 * @see https://mariadb.com/kb/en/library/limit/
@@ -241,7 +243,7 @@ class Select extends Statement
 	}
 
 	/**
-	 * @param string                     $name
+	 * @param string $name
 	 * @param bool|float|int|string|null ...$arguments
 	 *
 	 * @see https://mariadb.com/kb/en/library/procedure/
@@ -273,10 +275,10 @@ class Select extends Statement
 	/**
 	 * Exports the result to an external file.
 	 *
-	 * @param string      $filename
+	 * @param string $filename
 	 * @param string|null $charset
-	 * @param array       $fields_options Each key must be one of the EXP_FIELDS_* constants
-	 * @param array       $lines_options  Each key must be one of the EXP_LINESS_* constants
+	 * @param array<string,string> $fieldsOptions Each key must be one of the EXP_FIELDS_* constants
+	 * @param array<string,string> $linesOptions Each key must be one of the EXP_LINESS_* constants
 	 *
 	 * @see https://mariadb.com/kb/en/library/select-into-outfile/
 	 *
@@ -285,14 +287,14 @@ class Select extends Statement
 	public function intoOutfile(
 		string $filename,
 		string $charset = null,
-		array $fields_options = [],
-		array $lines_options = []
+		array $fieldsOptions = [],
+		array $linesOptions = []
 	) {
 		$this->sql['into_outfile'] = [
 			'filename' => $filename,
 			'charset' => $charset,
-			'fields_options' => $fields_options,
-			'lines_options' => $lines_options,
+			'fields_options' => $fieldsOptions,
+			'lines_options' => $linesOptions,
 		];
 		return $this;
 	}
@@ -450,6 +452,11 @@ class Select extends Statement
 		return " {$this->sql['lock']['type']}{$wait}";
 	}
 
+	/**
+	 * Renders the SELECT statement.
+	 *
+	 * @return string
+	 */
 	public function sql() : string
 	{
 		$sql = 'SELECT' . \PHP_EOL;
@@ -522,5 +529,15 @@ class Select extends Statement
 	public function run() : Result
 	{
 		return $this->database->query($this->sql());
+	}
+
+	/**
+	 * Runs the SELECT statement unbuffered.
+	 *
+	 * @return Result
+	 */
+	public function runUnbuffered() : Result
+	{
+		return $this->database->query($this->sql(), false);
 	}
 }
