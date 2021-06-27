@@ -1,4 +1,13 @@
-<?php namespace Framework\Database\Definition;
+<?php declare(strict_types=1);
+/*
+ * This file is part of The Framework Database Library.
+ *
+ * (c) Natan Felles <natanfelles@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace Framework\Database\Definition;
 
 use Framework\Database\Definition\Table\TableDefinition;
 use Framework\Database\Statement;
@@ -13,9 +22,9 @@ use LogicException;
 class AlterTable extends Statement
 {
 	/**
-	 * @return $this
+	 * @return static
 	 */
-	public function online()
+	public function online() : static
 	{
 		$this->sql['online'] = true;
 		return $this;
@@ -30,9 +39,9 @@ class AlterTable extends Statement
 	}
 
 	/**
-	 * @return $this
+	 * @return static
 	 */
-	public function ignore()
+	public function ignore() : static
 	{
 		$this->sql['ignore'] = true;
 		return $this;
@@ -49,9 +58,9 @@ class AlterTable extends Statement
 	/**
 	 * @param string $tableName
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function table(string $tableName)
+	public function table(string $tableName) : static
 	{
 		$this->sql['table'] = $tableName;
 		return $this;
@@ -68,9 +77,9 @@ class AlterTable extends Statement
 	/**
 	 * @param int $seconds
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function wait(int $seconds)
+	public function wait(int $seconds) : static
 	{
 		$this->sql['wait'] = $seconds;
 		return $this;
@@ -92,9 +101,9 @@ class AlterTable extends Statement
 	/**
 	 * @param callable $definition
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function add(callable $definition)
+	public function add(callable $definition) : static
 	{
 		$this->sql['add'] = $definition;
 		return $this;
@@ -113,9 +122,9 @@ class AlterTable extends Statement
 	/**
 	 * @param callable $definition
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function change(callable $definition)
+	public function change(callable $definition) : static
 	{
 		$this->sql['change'] = $definition;
 		return $this;
@@ -134,9 +143,9 @@ class AlterTable extends Statement
 	/**
 	 * @param callable $definition
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function modify(callable $definition)
+	public function modify(callable $definition) : static
 	{
 		$this->sql['modify'] = $definition;
 		return $this;
@@ -155,9 +164,9 @@ class AlterTable extends Statement
 	/**
 	 * @param callable $definition
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function dropColumns(callable $definition)
+	public function dropColumns(callable $definition) : static
 	{
 		$this->sql['drop_columns'] = $definition;
 		return $this;
@@ -166,9 +175,9 @@ class AlterTable extends Statement
 	/**
 	 * @param callable $definition
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function drop(callable $definition)
+	public function drop(callable $definition) : static
 	{
 		$this->sql['drop'] = $definition;
 		return $this;

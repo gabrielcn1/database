@@ -1,4 +1,13 @@
-<?php namespace Framework\Database\Definition;
+<?php declare(strict_types=1);
+/*
+ * This file is part of The Framework Database Library.
+ *
+ * (c) Natan Felles <natanfelles@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace Framework\Database\Definition;
 
 use Framework\Database\Statement;
 use LogicException;
@@ -11,9 +20,9 @@ use LogicException;
 class DropSchema extends Statement
 {
 	/**
-	 * @return $this
+	 * @return static
 	 */
-	public function ifExists()
+	public function ifExists() : static
 	{
 		$this->sql['if_exists'] = true;
 		return $this;
@@ -30,9 +39,9 @@ class DropSchema extends Statement
 	/**
 	 * @param string $schemaName
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function schema(string $schemaName)
+	public function schema(string $schemaName) : static
 	{
 		$this->sql['schema'] = $schemaName;
 		return $this;

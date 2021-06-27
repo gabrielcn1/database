@@ -1,4 +1,13 @@
-<?php namespace Framework\Database\Manipulation;
+<?php declare(strict_types=1);
+/*
+ * This file is part of The Framework Database Library.
+ *
+ * (c) Natan Felles <natanfelles@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace Framework\Database\Manipulation;
 
 use Closure;
 use InvalidArgumentException;
@@ -49,10 +58,12 @@ class Delete extends Statement
 	 * @param array<string,Closure|string>|Closure|string ...$references Extra
 	 * references. Same values as $reference
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function table(array | Closure | string $reference, array | Closure | string ...$references)
-	{
+	public function table(
+		array | Closure | string $reference,
+		array | Closure | string ...$references
+	) : static {
 		$this->sql['table'] = [];
 		$references = $this->mergeExpressions($reference, $references);
 		foreach ($references as $reference) {
@@ -85,9 +96,9 @@ class Delete extends Statement
 	 *
 	 * @see https://mariadb.com/kb/en/library/limit/
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function limit(int $limit)
+	public function limit(int $limit) : static
 	{
 		return $this->setLimit($limit);
 	}

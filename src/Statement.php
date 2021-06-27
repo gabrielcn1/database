@@ -1,4 +1,13 @@
-<?php namespace Framework\Database;
+<?php declare(strict_types=1);
+/*
+ * This file is part of The Framework Database Library.
+ *
+ * (c) Natan Felles <natanfelles@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace Framework\Database;
 
 /**
  * Class Statement.
@@ -35,9 +44,9 @@ abstract class Statement
 	 *
 	 * @see Statement::$sql
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function reset(string $sql = null)
+	public function reset(string $sql = null) : static
 	{
 		if ($sql === null) {
 			unset($this->sql);
@@ -59,5 +68,5 @@ abstract class Statement
 	 *
 	 * @return mixed
 	 */
-	abstract public function run();
+	abstract public function run() : mixed;
 }

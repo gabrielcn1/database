@@ -1,4 +1,13 @@
-<?php namespace Framework\Database\Manipulation;
+<?php declare(strict_types=1);
+/*
+ * This file is part of The Framework Database Library.
+ *
+ * (c) Natan Felles <natanfelles@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace Framework\Database\Manipulation;
 
 use Closure;
 use Framework\Database\Result;
@@ -186,12 +195,12 @@ class Select extends Statement
 	 *
 	 * @see https://mariadb.com/kb/en/library/select/#select-expressions
 	 *
-	 * @return $this
+	 * @return static
 	 */
 	public function expressions(
 		array | Closure | string $expression,
 		array | Closure | string ...$expressions
-	) {
+	) : static {
 		$expressions = $this->mergeExpressions($expression, $expressions);
 		foreach ($expressions as $expression) {
 			$this->sql['expressions'][] = $expression;
@@ -205,10 +214,12 @@ class Select extends Statement
 	 * @param array<string,Closure|string>|Closure|string $expression
 	 * @param array<string,Closure|string>|Closure|string ...$expressions
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function columns(array | Closure | string $expression, array | Closure | string ...$expressions)
-	{
+	public function columns(
+		array | Closure | string $expression,
+		array | Closure | string ...$expressions
+	) : static {
 		return $this->expressions($expression, ...$expressions);
 	}
 
@@ -235,9 +246,9 @@ class Select extends Statement
 	 *
 	 * @see https://mariadb.com/kb/en/library/limit/
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function limit(int $limit, int $offset = null)
+	public function limit(int $limit, int $offset = null) : static
 	{
 		return $this->setLimit($limit, $offset);
 	}
@@ -248,9 +259,9 @@ class Select extends Statement
 	 *
 	 * @see https://mariadb.com/kb/en/library/procedure/
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function procedure(string $name, bool | float | int | string | null ...$arguments)
+	public function procedure(string $name, bool | float | int | string | null ...$arguments) : static
 	{
 		$this->sql['procedure'] = [
 			'name' => $name,
@@ -282,14 +293,14 @@ class Select extends Statement
 	 *
 	 * @see https://mariadb.com/kb/en/library/select-into-outfile/
 	 *
-	 * @return $this
+	 * @return static
 	 */
 	public function intoOutfile(
 		string $filename,
 		string $charset = null,
 		array $fieldsOptions = [],
 		array $linesOptions = []
-	) {
+	) : static {
 		$this->sql['into_outfile'] = [
 			'filename' => $filename,
 			'charset' => $charset,
@@ -371,9 +382,9 @@ class Select extends Statement
 	 *
 	 * @see https://mariadb.com/kb/en/library/select-into-dumpfile/
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function intoDumpfile(string $filepath, string ...$variables)
+	public function intoDumpfile(string $filepath, string ...$variables) : static
 	{
 		$this->sql['into_dumpfile'] = [
 			'filepath' => $filepath,
@@ -408,9 +419,9 @@ class Select extends Statement
 	 *
 	 * @see https://mariadb.com/kb/en/library/for-update/
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function lockForUpdate(int $wait = null)
+	public function lockForUpdate(int $wait = null) : static
 	{
 		$this->sql['lock'] = [
 			'type' => 'FOR UPDATE',
@@ -424,9 +435,9 @@ class Select extends Statement
 	 *
 	 * @see https://mariadb.com/kb/en/library/lock-in-share-mode/
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function lockInShareMode(int $wait = null)
+	public function lockInShareMode(int $wait = null) : static
 	{
 		$this->sql['lock'] = [
 			'type' => 'LOCK IN SHARE MODE',

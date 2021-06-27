@@ -1,4 +1,13 @@
-<?php namespace Framework\Database\Definition;
+<?php declare(strict_types=1);
+/*
+ * This file is part of The Framework Database Library.
+ *
+ * (c) Natan Felles <natanfelles@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace Framework\Database\Definition;
 
 use Framework\Database\Definition\Table\TableDefinition;
 use Framework\Database\Statement;
@@ -16,9 +25,9 @@ class CreateTable extends Statement
 	 *
 	 * WARNING: This feature is MariaDB only. It is not compatible with MySQL.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function orReplace()
+	public function orReplace() : static
 	{
 		$this->sql['or_replace'] = true;
 		return $this;
@@ -38,9 +47,9 @@ class CreateTable extends Statement
 	}
 
 	/**
-	 * @return $this
+	 * @return static
 	 */
-	public function temporary()
+	public function temporary() : static
 	{
 		$this->sql['temporary'] = true;
 		return $this;
@@ -55,9 +64,9 @@ class CreateTable extends Statement
 	}
 
 	/**
-	 * @return $this
+	 * @return static
 	 */
-	public function ifNotExists()
+	public function ifNotExists() : static
 	{
 		$this->sql['if_not_exists'] = true;
 		return $this;
@@ -79,9 +88,9 @@ class CreateTable extends Statement
 	/**
 	 * @param string $tableName
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function table(string $tableName)
+	public function table(string $tableName) : static
 	{
 		$this->sql['table'] = $tableName;
 		return $this;
@@ -98,9 +107,9 @@ class CreateTable extends Statement
 	/**
 	 * @param callable $definition
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function definition(callable $definition)
+	public function definition(callable $definition) : static
 	{
 		$this->sql['definition'] = $definition;
 		return $this;

@@ -1,4 +1,13 @@
-<?php namespace Framework\Database\Manipulation;
+<?php declare(strict_types=1);
+/*
+ * This file is part of The Framework Database Library.
+ *
+ * (c) Natan Felles <natanfelles@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace Framework\Database\Manipulation;
 
 use Closure;
 use InvalidArgumentException;
@@ -16,9 +25,9 @@ abstract class Statement extends \Framework\Database\Statement
 	 * @param string $option One of the OPT_* constants
 	 * @param string ...$options Each option value must be one of the OPT_* constants
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function options(string $option, string ...$options)
+	public function options(string $option, string ...$options) : static
 	{
 		$this->sql['options'] = [];
 		$options = $this->mergeExpressions($option, $options);
@@ -64,9 +73,9 @@ abstract class Statement extends \Framework\Database\Statement
 	 *
 	 * @see https://mariadb.com/kb/en/library/limit/
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	protected function setLimit(int $limit, int $offset = null)
+	protected function setLimit(int $limit, int $offset = null) : static
 	{
 		$this->sql['limit'] = [
 			'limit' => $limit,
@@ -126,7 +135,7 @@ abstract class Statement extends \Framework\Database\Statement
 			if (\count($column) !== 1) {
 				throw new InvalidArgumentException('Aliased column must have only 1 key');
 			}
-			$alias = \array_key_first($column);
+			$alias = (string) \array_key_first($column);
 			return $this->renderIdentifier($column[$alias]) . ' AS '
 				. $this->database->protectIdentifier($alias);
 		}

@@ -1,4 +1,13 @@
-<?php namespace Framework\Database\Definition\Table\Columns\Numeric;
+<?php declare(strict_types=1);
+/*
+ * This file is part of The Framework Database Library.
+ *
+ * (c) Natan Felles <natanfelles@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace Framework\Database\Definition\Table\Columns\Numeric;
 
 use Framework\Database\Definition\Table\Columns\Column;
 
@@ -12,9 +21,9 @@ abstract class NumericDataType extends Column
 	/**
 	 * @see https://mariadb.com/kb/en/library/auto_increment/
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function autoIncrement()
+	public function autoIncrement() : static
 	{
 		$this->autoIncrement = true;
 		return $this;
@@ -29,9 +38,9 @@ abstract class NumericDataType extends Column
 	}
 
 	/**
-	 * @return $this
+	 * @return static
 	 */
-	public function signed()
+	public function signed() : static
 	{
 		$this->signed = true;
 		return $this;
@@ -46,9 +55,9 @@ abstract class NumericDataType extends Column
 	}
 
 	/**
-	 * @return $this
+	 * @return static
 	 */
-	public function unsigned()
+	public function unsigned() : static
 	{
 		$this->unsigned = true;
 		return $this;
@@ -63,9 +72,9 @@ abstract class NumericDataType extends Column
 	}
 
 	/**
-	 * @return $this
+	 * @return static
 	 */
-	public function zerofill()
+	public function zerofill() : static
 	{
 		$this->zerofill = true;
 		return $this;

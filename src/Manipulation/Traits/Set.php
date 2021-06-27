@@ -1,4 +1,13 @@
-<?php namespace Framework\Database\Manipulation\Traits;
+<?php declare(strict_types=1);
+/*
+ * This file is part of The Framework Database Library.
+ *
+ * (c) Natan Felles <natanfelles@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace Framework\Database\Manipulation\Traits;
 
 use Closure;
 
@@ -12,9 +21,9 @@ trait Set
 	 *
 	 * @param array<string,Closure|float|int|string|null> $columns Array of columns => values
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function set(array $columns)
+	public function set(array $columns) : static
 	{
 		$this->sql['set'] = $columns;
 		return $this;

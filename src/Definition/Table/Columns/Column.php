@@ -1,4 +1,13 @@
-<?php namespace Framework\Database\Definition\Table\Columns;
+<?php declare(strict_types=1);
+/*
+ * This file is part of The Framework Database Library.
+ *
+ * (c) Natan Felles <natanfelles@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace Framework\Database\Definition\Table\Columns;
 
 use Closure;
 use Framework\Database\Database;
@@ -51,18 +60,18 @@ abstract class Column extends DefinitionPart
 	}
 
 	/**
-	 * @return $this
+	 * @return static
 	 */
-	public function null()
+	public function null() : static
 	{
 		$this->null = true;
 		return $this;
 	}
 
 	/**
-	 * @return $this
+	 * @return static
 	 */
-	public function notNull()
+	public function notNull() : static
 	{
 		$this->null = false;
 		return $this;
@@ -76,9 +85,9 @@ abstract class Column extends DefinitionPart
 	/**
 	 * @param bool|Closure|float|int|string|null $default
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function default(bool | Closure | float | int | string | null $default)
+	public function default(bool | Closure | float | int | string | null $default) : static
 	{
 		$this->default = $default;
 		return $this;
@@ -98,9 +107,9 @@ abstract class Column extends DefinitionPart
 	/**
 	 * @param string $comment
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function comment(string $comment)
+	public function comment(string $comment) : static
 	{
 		$this->comment = $comment;
 		return $this;
@@ -115,9 +124,9 @@ abstract class Column extends DefinitionPart
 	}
 
 	/**
-	 * @return $this
+	 * @return static
 	 */
-	public function primaryKey()
+	public function primaryKey() : static
 	{
 		$this->primaryKey = true;
 		return $this;
@@ -132,9 +141,9 @@ abstract class Column extends DefinitionPart
 	}
 
 	/**
-	 * @return $this
+	 * @return static
 	 */
-	public function uniqueKey()
+	public function uniqueKey() : static
 	{
 		$this->uniqueKey = true;
 		return $this;
@@ -149,9 +158,9 @@ abstract class Column extends DefinitionPart
 	}
 
 	/**
-	 * @return $this
+	 * @return static
 	 */
-	public function first()
+	public function first() : static
 	{
 		$this->first = true;
 		return $this;
@@ -168,9 +177,9 @@ abstract class Column extends DefinitionPart
 	/**
 	 * @param string $column
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function after(string $column)
+	public function after(string $column) : static
 	{
 		$this->after = $column;
 		return $this;

@@ -1,4 +1,13 @@
-<?php namespace Framework\Database\Definition\Table\Indexes\Keys\Traits;
+<?php declare(strict_types=1);
+/*
+ * This file is part of The Framework Database Library.
+ *
+ * (c) Natan Felles <natanfelles@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace Framework\Database\Definition\Table\Indexes\Keys\Traits;
 
 trait Constraint
 {
@@ -7,9 +16,9 @@ trait Constraint
 	/**
 	 * @param string $name
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function constraint(string $name)
+	public function constraint(string $name) : static
 	{
 		$this->constraint = $name;
 		return $this;

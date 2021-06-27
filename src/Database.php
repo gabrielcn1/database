@@ -1,4 +1,13 @@
-<?php namespace Framework\Database;
+<?php declare(strict_types=1);
+/*
+ * This file is part of The Framework Database Library.
+ *
+ * (c) Natan Felles <natanfelles@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace Framework\Database;
 
 use Closure;
 use Exception;
@@ -164,7 +173,7 @@ class Database
 	 *
 	 * @throws Exception
 	 *
-	 * @return $this
+	 * @return static
 	 */
 	protected function connect(
 		array | string $username,
@@ -172,7 +181,7 @@ class Database
 		string $schema = null,
 		string $host = 'localhost',
 		int $port = 3306
-	) {
+	) : static {
 		if ( ! \is_array($username)) {
 			$username = [
 				'host' => $host,
@@ -192,7 +201,7 @@ class Database
 			$this->mysqli->options($option, $value);
 		}
 		try {
-			$flags = null;
+			$flags = 0;
 			if ($config['ssl']['enabled'] === true) {
 				$this->mysqli->ssl_set(
 					$config['ssl']['key'],
@@ -211,7 +220,7 @@ class Database
 				$config['username'],
 				$config['password'],
 				$config['schema'],
-				$config['port'],
+				$config['port'] === null ? null : (int) $config['port'],
 				$config['socket'],
 				$flags
 			);

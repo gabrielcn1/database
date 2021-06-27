@@ -1,4 +1,13 @@
-<?php namespace Framework\Database\Definition;
+<?php declare(strict_types=1);
+/*
+ * This file is part of The Framework Database Library.
+ *
+ * (c) Natan Felles <natanfelles@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace Framework\Database\Definition;
 
 use Framework\Database\Statement;
 use LogicException;
@@ -11,9 +20,9 @@ use LogicException;
 class CreateSchema extends Statement
 {
 	/**
-	 * @return $this
+	 * @return static
 	 */
-	public function orReplace()
+	public function orReplace() : static
 	{
 		$this->sql['or_replace'] = true;
 		return $this;
@@ -28,9 +37,9 @@ class CreateSchema extends Statement
 	}
 
 	/**
-	 * @return $this
+	 * @return static
 	 */
-	public function ifNotExists()
+	public function ifNotExists() : static
 	{
 		$this->sql['if_not_exists'] = true;
 		return $this;
@@ -52,9 +61,9 @@ class CreateSchema extends Statement
 	/**
 	 * @param string $schemaName
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function schema(string $schemaName)
+	public function schema(string $schemaName) : static
 	{
 		$this->sql['schema'] = $schemaName;
 		return $this;
@@ -71,9 +80,9 @@ class CreateSchema extends Statement
 	/**
 	 * @param string $charset
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function charset(string $charset)
+	public function charset(string $charset) : static
 	{
 		$this->sql['charset'] = $charset;
 		return $this;
@@ -91,9 +100,9 @@ class CreateSchema extends Statement
 	/**
 	 * @param string $collation
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function collate(string $collation)
+	public function collate(string $collation) : static
 	{
 		$this->sql['collation'] = $collation;
 		return $this;

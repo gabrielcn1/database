@@ -1,4 +1,13 @@
-<?php namespace Tests\Database\Manipulation;
+<?php
+/*
+ * This file is part of The Framework Database Library.
+ *
+ * (c) Natan Felles <natanfelles@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace Tests\Database\Manipulation;
 
 use Closure;
 use Framework\Database\Manipulation\Statement;
@@ -14,9 +23,9 @@ class StatementMock extends Statement
 	 * @param int $limit
 	 * @param int|null $offset
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function limit(int $limit, int $offset = null)
+	public function limit(int $limit, int $offset = null) : static
 	{
 		return $this->setLimit($limit, $offset);
 	}
@@ -59,7 +68,7 @@ class StatementMock extends Statement
 		return 'SQL';
 	}
 
-	public function run() : void
+	public function run() : mixed
 	{
 	}
 }

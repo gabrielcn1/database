@@ -1,4 +1,13 @@
-<?php namespace Framework\Database\Definition\Table\Columns\String;
+<?php declare(strict_types=1);
+/*
+ * This file is part of The Framework Database Library.
+ *
+ * (c) Natan Felles <natanfelles@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace Framework\Database\Definition\Table\Columns\String;
 
 use Framework\Database\Definition\Table\Columns\Column;
 
@@ -10,9 +19,9 @@ abstract class StringDataType extends Column
 	/**
 	 * @param string $charset
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function charset(string $charset)
+	public function charset(string $charset) : static
 	{
 		$this->charset = $charset;
 		return $this;
@@ -29,9 +38,9 @@ abstract class StringDataType extends Column
 	/**
 	 * @param string $collation
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function collate(string $collation)
+	public function collate(string $collation) : static
 	{
 		$this->collation = $collation;
 		return $this;

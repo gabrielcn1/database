@@ -1,4 +1,13 @@
-<?php namespace Framework\Database\Definition;
+<?php declare(strict_types=1);
+/*
+ * This file is part of The Framework Database Library.
+ *
+ * (c) Natan Felles <natanfelles@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace Framework\Database\Definition;
 
 use Framework\Database\Statement;
 use InvalidArgumentException;
@@ -12,9 +21,9 @@ use LogicException;
 class DropTable extends Statement
 {
 	/**
-	 * @return $this
+	 * @return static
 	 */
-	public function temporary()
+	public function temporary() : static
 	{
 		$this->sql['temporary'] = true;
 		return $this;
@@ -29,9 +38,9 @@ class DropTable extends Statement
 	}
 
 	/**
-	 * @return $this
+	 * @return static
 	 */
-	public function ifExists()
+	public function ifExists() : static
 	{
 		$this->sql['if_exists'] = true;
 		return $this;
@@ -48,9 +57,9 @@ class DropTable extends Statement
 	/**
 	 * @param string $comment
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function commentToSave(string $comment)
+	public function commentToSave(string $comment) : static
 	{
 		$this->sql['comment'] = $comment;
 		return $this;
@@ -69,9 +78,9 @@ class DropTable extends Statement
 	 * @param string $table
 	 * @param string ...$tables
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function table(string $table, string ...$tables)
+	public function table(string $table, string ...$tables) : static
 	{
 		$this->sql['tables'] = $tables ? \array_merge([$table], $tables) : [$table];
 		return $this;
@@ -94,9 +103,9 @@ class DropTable extends Statement
 	/**
 	 * @param int $seconds
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function wait(int $seconds)
+	public function wait(int $seconds) : static
 	{
 		$this->sql['wait'] = $seconds;
 		return $this;
