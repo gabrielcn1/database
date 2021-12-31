@@ -25,6 +25,11 @@ class Functions
         $this->database = $database;
     }
 
+    public function __invoke(mixed $value) : Closure
+    {
+        return $this->same($value);
+    }
+
     protected function renderValue(
         Closure | int | string | float | null $value
     ) : string | float | int {
