@@ -109,10 +109,7 @@ class Database
     public function __get(string $name) : mixed
     {
         if ($name === 'functions') {
-            if ( ! isset($this->functions)) {
-                $this->functions = new Functions($this);
-            }
-            return $this->functions;
+            return $this->functions ??= new Functions($this);
         }
         if (\property_exists($this, $name)) {
             throw new LogicException("Property not allowed: {$name}");
