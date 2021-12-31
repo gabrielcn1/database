@@ -35,9 +35,7 @@ class Functions
 
     public function same(mixed $value) : Closure
     {
-        return static function () use ($value) : mixed {
-            return $value;
-        };
+        return static fn () : mixed => $value;
     }
 
     public function concat(string $value1, string $value2, string ...$values) : Closure
@@ -48,23 +46,17 @@ class Functions
         }
         unset($value);
         $values = \implode(', ', $values);
-        return static function () use ($values) : string {
-            return 'CONCAT(' . $values . ')';
-        };
+        return static fn () : string => 'CONCAT(' . $values . ')';
     }
 
     public function hex(Closure | int | string | null $value) : Closure
     {
         $value = $this->renderValue($value);
-        return static function () use ($value) : string {
-            return 'HEX(' . $value . ')';
-        };
+        return static fn () : string => 'HEX(' . $value . ')';
     }
 
     public function now() : Closure
     {
-        return static function () : string {
-            return 'NOW()';
-        };
+        return static fn () : string => 'NOW()';
     }
 }
