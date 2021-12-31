@@ -76,7 +76,6 @@ class Database
     protected Functions $functions;
 
     /**
-    /**
      * Database constructor.
      *
      * @param array<string,mixed>|string $username
@@ -107,26 +106,26 @@ class Database
         $this->close();
     }
 
-	public function __get(string $name) : mixed
-	{
-		if ($name === 'functions') {
-			if ( ! isset($this->functions)) {
-				$this->functions = new Functions($this);
-			}
-			return $this->functions;
-		}
-		if (\property_exists($this, $name)) {
-			throw new LogicException("Property not allowed: {$name}");
-		}
-		throw new LogicException("Property not found: {$name}");
-	}
+    public function __get(string $name) : mixed
+    {
+        if ($name === 'functions') {
+            if ( ! isset($this->functions)) {
+                $this->functions = new Functions($this);
+            }
+            return $this->functions;
+        }
+        if (\property_exists($this, $name)) {
+            throw new LogicException("Property not allowed: {$name}");
+        }
+        throw new LogicException("Property not found: {$name}");
+    }
 
-	protected function log(string $message, int $level = Logger::ERROR) : void
-	{
-		if ($this->logger) {
-			$this->logger->log($level, $message);
-		}
-	}
+    protected function log(string $message, int $level = Logger::ERROR) : void
+    {
+        if ($this->logger) {
+            $this->logger->log($level, $message);
+        }
+    }
 
     /**
      * Make Base Connection configurations.
