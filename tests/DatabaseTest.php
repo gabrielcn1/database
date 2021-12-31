@@ -456,4 +456,23 @@ final class DatabaseTest extends TestCase
         static::$database->exec($sql);
         self::assertSame($sql, static::$database->lastQuery());
     }
+
+    public function testMagicGetNotCreateNewInstances() : void
+    {
+        self::assertSame(static::$database->functions, static::$database->functions);
+    }
+
+    public function testMagicGetPropertyNotAllowed() : void
+    {
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Property not allowed: mysqli');
+        static::$database->mysqli; // @phpstan-ignore-line
+    }
+
+    public function testMagicGetPropertyNotFound() : void
+    {
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Property not found: foo');
+        static::$database->foo; // @phpstan-ignore-line
+    }
 }

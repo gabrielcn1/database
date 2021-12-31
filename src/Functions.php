@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of Aplus Framework Database Library.
  *
@@ -31,11 +31,24 @@ class Functions
     }
 
     protected function renderValue(
-        Closure | int | string | float | null $value
+        Closure | float | bool | int | string | null $value
     ) : string | float | int {
         return $value instanceof Closure
             ? '(' . $value($this->database) . ')'
             : $this->database->quote($value);
+    }
+
+    /**
+     * @param array<bool|Closure|float|int|string|null> $values
+     *
+     * @return string
+     */
+    protected function implodeValues(array $values) : string
+    {
+        foreach ($values as &$value) {
+            $value = $this->renderValue($value);
+        }
+        return \implode(', ', $values);
     }
 
     public function same(mixed $value) : Closure
@@ -43,25 +56,22 @@ class Functions
         return static fn () : mixed => $value;
     }
 
-    public function concat(string $value1, string $value2, string ...$values) : Closure
-    {
-        $values = [$value1, $value2, ...$values];
-        foreach ($values as &$value) {
-            $value = $this->renderValue($value);
-        }
-        unset($value);
-        $values = \implode(', ', $values);
+    public function concat(
+        Closure | float | bool | int | string | null $value,
+        Closure | float | bool | int | string | null ...$values
+    ) : Closure {
+        $values = $this->implodeValues([$value, ...$values]);
         return static fn () : string => 'CONCAT(' . $values . ')';
     }
 
-    public function hex(Closure | int | string | null $value) : Closure
+    public function hex(Closure | float | bool | int | string | null $value) : Closure
     {
         $value = $this->renderValue($value);
         return static fn () : string => 'HEX(' . $value . ')';
     }
 
-    public function now() : Closure
+    public function now(int $precision = null) : Closure
     {
-        return static fn () : string => 'NOW()';
+        return static fn () : string => 'NOW(' . $precision . ')';
     }
 }
