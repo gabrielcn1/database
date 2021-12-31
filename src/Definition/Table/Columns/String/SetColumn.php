@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -14,10 +14,12 @@ use Framework\Database\Definition\Table\Columns\Traits\ListLength;
 /**
  * Class SetColumn.
  *
- * @see https://mariadb.com/kb/en/library/set-data-type/
+ * @see https://mariadb.com/kb/en/set-data-type/
+ *
+ * @package database
  */
 final class SetColumn extends StringDataType
 {
-	use ListLength;
-	protected string $type = 'set';
+    use ListLength;
+    protected string $type = 'set';
 }

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -12,9 +12,11 @@ namespace Framework\Database\Definition\Table\Columns\Numeric;
 /**
  * Class BooleanColumn.
  *
- * @see https://mariadb.com/kb/en/library/boolean/
+ * @see https://mariadb.com/kb/en/boolean/
+ *
+ * @package database
  */
 final class BooleanColumn extends NumericDataType
 {
-	protected string $type = 'boolean';
+    protected string $type = 'boolean';
 }

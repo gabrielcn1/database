@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -12,11 +12,13 @@ namespace Framework\Database\Definition\Table\Columns\String;
 /**
  * Class CharColumn.
  *
- * @see https://mariadb.com/kb/en/library/char/
+ * @see https://mariadb.com/kb/en/char/
+ *
+ * @package database
  */
 final class CharColumn extends StringDataType
 {
-	protected string $type = 'char';
-	protected int $minLength = 0;
-	protected int $maxLength = 255;
+    protected string $type = 'char';
+    protected int $minLength = 0;
+    protected int $maxLength = 255;
 }

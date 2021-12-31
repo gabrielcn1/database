@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -14,12 +14,12 @@ use Tests\Database\TestCase;
 
 final class SpatialKeyTest extends TestCase
 {
-	public function testType() : void
-	{
-		$index = new SpatialKey(static::$database, null, 'id');
-		self::assertSame(
-			' SPATIAL KEY (`id`)',
-			$index->sql()
-		);
-	}
+    public function testType() : void
+    {
+        $index = new SpatialKey(static::$database, null, 'id');
+        self::assertSame(
+            ' SPATIAL KEY (`id`)',
+            $index->sql()
+        );
+    }
 }

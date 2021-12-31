@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -13,5 +13,5 @@ use Framework\Database\Definition\Table\Columns\String\StringDataType;
 
 class StringDataTypeMock extends StringDataType
 {
-	protected string $type = 'mock';
+    protected string $type = 'mock';
 }

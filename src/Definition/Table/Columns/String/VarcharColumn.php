@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -12,10 +12,12 @@ namespace Framework\Database\Definition\Table\Columns\String;
 /**
  * Class VarcharColumn.
  *
- * @see https://mariadb.com/kb/en/library/varchar/
+ * @see https://mariadb.com/kb/en/varchar/
+ *
+ * @package database
  */
 final class VarcharColumn extends StringDataType
 {
-	protected string $type = 'varchar';
-	protected int $maxLength = 65535;
+    protected string $type = 'varchar';
+    protected int $maxLength = 65535;
 }

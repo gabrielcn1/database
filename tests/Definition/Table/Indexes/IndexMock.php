@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -13,5 +13,5 @@ use Framework\Database\Definition\Table\Indexes\Index;
 
 class IndexMock extends Index
 {
-	public string $type = 'index_mock';
+    public string $type = 'index_mock';
 }

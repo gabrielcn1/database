@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -9,18 +9,23 @@
  */
 namespace Framework\Database\Definition\Table\Columns\Traits;
 
+/**
+ * Trait DecimalLength.
+ *
+ * @package database
+ */
 trait DecimalLength
 {
-	protected function renderLength() : ?string
-	{
-		if ( ! isset($this->length[0])) {
-			return null;
-		}
-		$maximum = $this->database->quote($this->length[0]);
-		if (isset($this->length[1])) {
-			$decimals = $this->database->quote($this->length[1]);
-			$maximum .= ",{$decimals}";
-		}
-		return "({$maximum})";
-	}
+    protected function renderLength() : ?string
+    {
+        if ( ! isset($this->length[0])) {
+            return null;
+        }
+        $maximum = $this->database->quote($this->length[0]);
+        if (isset($this->length[1])) {
+            $decimals = $this->database->quote($this->length[1]);
+            $maximum .= ",{$decimals}";
+        }
+        return "({$maximum})";
+    }
 }

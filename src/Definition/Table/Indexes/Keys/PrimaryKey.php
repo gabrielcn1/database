@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -9,10 +9,12 @@
  */
 namespace Framework\Database\Definition\Table\Indexes\Keys;
 
-use Framework\Database\Definition\Table\Indexes\Index;
-
-final class PrimaryKey extends Index
+/**
+ * Class PrimaryKey.
+ *
+ * @package database
+ */
+final class PrimaryKey extends ConstraintKey
 {
-	use Traits\Constraint;
-	protected string $type = 'PRIMARY KEY';
+    protected string $type = 'PRIMARY KEY';
 }

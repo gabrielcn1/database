@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -15,8 +15,10 @@ use Framework\Database\Definition\Table\Columns\Column;
  * Class MultipolygonColumn.
  *
  * @see https://mariadb.com/kb/en/multipolygon/
+ *
+ * @package database
  */
 final class MultipolygonColumn extends Column
 {
-	protected string $type = 'multipolygon';
+    protected string $type = 'multipolygon';
 }

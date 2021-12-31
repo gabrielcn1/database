@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -14,9 +14,11 @@ use Framework\Database\Definition\Table\Indexes\Index;
 /**
  * Class SpatialKey.
  *
- * @see https://mariadb.com/kb/en/library/spatial-index/
+ * @see https://mariadb.com/kb/en/spatial-index/
+ *
+ * @package database
  */
 final class SpatialKey extends Index
 {
-	protected string $type = 'SPATIAL KEY';
+    protected string $type = 'SPATIAL KEY';
 }

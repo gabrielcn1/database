@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -15,8 +15,10 @@ use Framework\Database\Definition\Table\Columns\Column;
  * Class PolygonColumn.
  *
  * @see https://mariadb.com/kb/en/polygon/
+ *
+ * @package database
  */
 final class PolygonColumn extends Column
 {
-	protected string $type = 'polygon';
+    protected string $type = 'polygon';
 }

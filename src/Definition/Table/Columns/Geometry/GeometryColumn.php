@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -15,8 +15,10 @@ use Framework\Database\Definition\Table\Columns\Column;
  * Class GeometryColumn.
  *
  * @see https://mariadb.com/kb/en/geometry/
+ *
+ * @package database
  */
 final class GeometryColumn extends Column
 {
-	protected string $type = 'geometry';
+    protected string $type = 'geometry';
 }

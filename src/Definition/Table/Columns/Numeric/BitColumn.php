@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -14,9 +14,11 @@ use Framework\Database\Definition\Table\Columns\Column;
 /**
  * Class BitColumn.
  *
- * @see https://mariadb.com/kb/en/library/bit/
+ * @see https://mariadb.com/kb/en/bit/
+ *
+ * @package database
  */
 final class BitColumn extends Column
 {
-	protected string $type = 'bit';
+    protected string $type = 'bit';
 }

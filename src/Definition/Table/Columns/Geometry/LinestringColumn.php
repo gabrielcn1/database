@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -15,8 +15,10 @@ use Framework\Database\Definition\Table\Columns\Column;
  * Class LinestringColumn.
  *
  * @see https://mariadb.com/kb/en/linestring/
+ *
+ * @package database
  */
 final class LinestringColumn extends Column
 {
-	protected string $type = 'linestring';
+    protected string $type = 'linestring';
 }

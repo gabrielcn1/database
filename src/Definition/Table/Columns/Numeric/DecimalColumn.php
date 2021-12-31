@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -11,10 +11,15 @@ namespace Framework\Database\Definition\Table\Columns\Numeric;
 
 use Framework\Database\Definition\Table\Columns\Traits\DecimalLength;
 
+/**
+ * Class DecimalColumn.
+ *
+ * @package database
+ */
 final class DecimalColumn extends NumericDataType
 {
-	use DecimalLength;
-	protected string $type = 'decimal';
-	protected int $maxLength = 11;
-	protected float $decimal;
+    use DecimalLength;
+    protected string $type = 'decimal';
+    protected int $maxLength = 11;
+    protected float $decimal;
 }

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -14,11 +14,13 @@ use Framework\Database\Definition\Table\Columns\Column;
 /**
  * Class BinaryColumn.
  *
- * @see https://mariadb.com/kb/en/library/binary/
+ * @see https://mariadb.com/kb/en/binary/
+ *
+ * @package database
  */
 final class BinaryColumn extends Column
 {
-	protected string $type = 'binary';
-	protected int $minLength = 0;
-	protected int $maxLength = 255;
+    protected string $type = 'binary';
+    protected int $minLength = 0;
+    protected int $maxLength = 255;
 }

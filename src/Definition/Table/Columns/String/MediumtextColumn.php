@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -12,9 +12,11 @@ namespace Framework\Database\Definition\Table\Columns\String;
 /**
  * Class MediumtextColumn.
  *
- * @see https://mariadb.com/kb/en/library/mediumtext/
+ * @see https://mariadb.com/kb/en/mediumtext/
+ *
+ * @package database
  */
 final class MediumtextColumn extends StringDataType
 {
-	protected string $type = 'mediumtext';
+    protected string $type = 'mediumtext';
 }

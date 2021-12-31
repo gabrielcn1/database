@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -14,9 +14,11 @@ use Framework\Database\Definition\Table\Columns\Column;
 /**
  * Class EnumColumn.
  *
- * @see https://mariadb.com/kb/en/library/date/
+ * @see https://mariadb.com/kb/en/date/
+ *
+ * @package database
  */
 final class DateColumn extends Column
 {
-	protected string $type = 'date';
+    protected string $type = 'date';
 }

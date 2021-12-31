@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -12,11 +12,13 @@ namespace Framework\Database\Definition\Table\Columns\DateTime;
 use Framework\Database\Definition\Table\Columns\Column;
 
 /**
- * Class TimestampColumn.
+ * Class YearColumn.
  *
- * @see https://mariadb.com/kb/en/library/year-data-type/
+ * @see https://mariadb.com/kb/en/year-data-type/
+ *
+ * @package database
  */
 final class YearColumn extends Column
 {
-	protected string $type = 'year';
+    protected string $type = 'year';
 }

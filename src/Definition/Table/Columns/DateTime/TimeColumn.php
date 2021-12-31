@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -14,9 +14,11 @@ use Framework\Database\Definition\Table\Columns\Column;
 /**
  * Class TimeColumn.
  *
- * @see https://mariadb.com/kb/en/library/time/
+ * @see https://mariadb.com/kb/en/time/
+ *
+ * @package database
  */
 final class TimeColumn extends Column
 {
-	protected string $type = 'time';
+    protected string $type = 'time';
 }

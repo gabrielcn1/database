@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -11,7 +11,12 @@ namespace Framework\Database\Definition\Table\Indexes\Keys;
 
 use Framework\Database\Definition\Table\Indexes\Index;
 
+/**
+ * Class Key.
+ *
+ * @package database
+ */
 final class Key extends Index
 {
-	protected string $type = 'KEY';
+    protected string $type = 'KEY';
 }

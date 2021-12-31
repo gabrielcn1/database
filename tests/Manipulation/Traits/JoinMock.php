@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -14,9 +14,9 @@ use Tests\Database\Manipulation\StatementMock;
 
 class JoinMock extends StatementMock
 {
-	use Join {
-		hasFrom as public;
-		renderFrom as public;
-		renderJoin as public;
-	}
+    use Join {
+        hasFrom as public;
+        renderFrom as public;
+        renderJoin as public;
+    }
 }

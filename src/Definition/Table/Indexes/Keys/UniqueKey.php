@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -9,15 +9,14 @@
  */
 namespace Framework\Database\Definition\Table\Indexes\Keys;
 
-use Framework\Database\Definition\Table\Indexes\Index;
-
 /**
  * Class UniqueKey.
  *
- * @see https://mariadb.com/kb/en/library/getting-started-with-indexes/#unique-index
+ * @see https://mariadb.com/kb/en/getting-started-with-indexes/#unique-index
+ *
+ * @package database
  */
-final class UniqueKey extends Index
+final class UniqueKey extends ConstraintKey
 {
-	use Traits\Constraint;
-	protected string $type = 'UNIQUE KEY';
+    protected string $type = 'UNIQUE KEY';
 }

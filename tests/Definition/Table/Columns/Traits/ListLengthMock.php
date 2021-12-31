@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -14,5 +14,5 @@ use Tests\Database\Definition\Table\Columns\ColumnMock;
 
 class ListLengthMock extends ColumnMock
 {
-	use ListLength;
+    use ListLength;
 }

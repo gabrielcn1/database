@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -14,12 +14,12 @@ use Tests\Database\TestCase;
 
 final class UniqueKeyTest extends TestCase
 {
-	public function testType() : void
-	{
-		$index = new UniqueKey(static::$database, null, 'id');
-		self::assertSame(
-			' UNIQUE KEY (`id`)',
-			$index->sql()
-		);
-	}
+    public function testType() : void
+    {
+        $index = new UniqueKey(static::$database, null, 'id');
+        self::assertSame(
+            ' UNIQUE KEY (`id`)',
+            $index->sql()
+        );
+    }
 }

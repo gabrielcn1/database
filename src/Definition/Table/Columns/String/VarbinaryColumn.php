@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -14,10 +14,12 @@ use Framework\Database\Definition\Table\Columns\Column;
 /**
  * Class VarbinaryColumn.
  *
- * @see https://mariadb.com/kb/en/library/varbinary/
+ * @see https://mariadb.com/kb/en/varbinary/
+ *
+ * @package database
  */
 final class VarbinaryColumn extends Column
 {
-	protected string $type = 'varbinary';
-	protected int $maxLength = 65535;
+    protected string $type = 'varbinary';
+    protected int $maxLength = 65535;
 }

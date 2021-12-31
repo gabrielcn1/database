@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -14,10 +14,12 @@ use Framework\Database\Definition\Table\Columns\Traits\ListLength;
 /**
  * Class EnumColumn.
  *
- * @see https://mariadb.com/kb/en/library/enum/
+ * @see https://mariadb.com/kb/en/enum/
+ *
+ * @package database
  */
 final class EnumColumn extends StringDataType
 {
-	use ListLength;
-	protected string $type = 'enum';
+    use ListLength;
+    protected string $type = 'enum';
 }

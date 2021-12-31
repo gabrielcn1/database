@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of The Framework Database Library.
+ * This file is part of Aplus Framework Database Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
@@ -14,7 +14,7 @@ use Tests\Database\Manipulation\StatementMock;
 
 class OrderByMock extends StatementMock
 {
-	use OrderBy {
-		renderOrderBy as public;
-	}
+    use OrderBy {
+        renderOrderBy as public;
+    }
 }
