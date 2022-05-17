@@ -43,7 +43,6 @@ class ShowSchema extends Command
             );
             CLI::table($list, \array_keys($list[0]));
             CLI::write('Total: ' . \count($list));
-
             return;
         }
         CLI::write('No tables.');
@@ -66,9 +65,9 @@ FROM information_schema.TABLES WHERE TABLE_SCHEMA = ' . $this->getDatabase()
                 'Table' => $table['TABLE_NAME'],
                 'Engine' => $table['ENGINE'],
                 'Collation' => $table['TABLE_COLLATION'],
-                'Data Length' => Debugger::convertSize($table['DATA_LENGTH']),
-                'Index Length' => Debugger::convertSize($table['INDEX_LENGTH']),
-                'Data Free' => Debugger::convertSize($table['DATA_FREE']),
+                'Data Length' => Debugger::convertSize($table['DATA_LENGTH'] ?? 0),
+                'Index Length' => Debugger::convertSize($table['INDEX_LENGTH'] ?? 0),
+                'Data Free' => Debugger::convertSize($table['DATA_FREE'] ?? 0),
                 'Auto Increment' => $table['AUTO_INCREMENT'],
                 'Rows' => $table['TABLE_ROWS'],
                 'Comment' => $table['TABLE_COMMENT'],

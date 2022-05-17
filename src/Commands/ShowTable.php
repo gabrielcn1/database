@@ -10,6 +10,7 @@
 namespace Framework\Database\Commands;
 
 use Framework\CLI\CLI;
+use stdClass;
 
 /**
  * Class ShowTable.
@@ -70,9 +71,6 @@ class ShowTable extends Command
         $show = $this->getDatabase()->query(
             'SHOW FULL COLUMNS FROM ' . $this->getDatabase()->protectIdentifier($table)
         )->fetchArrayAll();
-        if ( ! $show) {
-            return [];
-        }
         $columns = [];
         foreach ($show as $row) {
             \preg_match(
@@ -83,29 +81,26 @@ class ShowTable extends Command
             $columns[] = [
                 'field' => $row['Field'],
                 'full_type' => $row['Type'],
-                'type' => $match[1] ?? null,
-                'length' => $match[2] ?? null,
-                'unsigned' => \ltrim(($match[3] ?? null) . ($match[4] ?? null)),
-                'default' => ($row['Default'] !== '' || \preg_match(
-                    '~char|set~',
-                    $match[1]
-                ) ? $row['Default'] : null),
-                'null' => ($row['Null'] === 'YES'),
+                'type' => $match[1] ?? '',
+                'length' => $match[2] ?? '',
+                'unsigned' => \ltrim(($match[3] ?? '') . ($match[4] ?? '')),
+                'default' => $row['Default'] !== '' || \preg_match('~char|set~', $match[1])
+                    ? $row['Default'] : '',
+                'null' => $row['Null'] === 'YES',
                 'auto_increment' => ($row['Extra'] === 'auto_increment'),
-                'on_update' => (\preg_match('~^on update (.+)~i', $row['Extra'], $match)
-                    ? $match[1] : ''),
+                'on_update' => \preg_match('~^on update (.+)~i', $row['Extra'], $match)
+                    ? $match[1] : '',
                 'collation' => $row['Collation'],
                 // @phpstan-ignore-next-line
                 'privileges' => \array_flip(\preg_split('~, *~', $row['Privileges'])),
                 'comment' => $row['Comment'],
-                'primary' => ($row['Key'] === 'PRI'),
+                'primary' => $row['Key'] === 'PRI',
             ];
         }
         $cols = [];
         foreach ($columns as $col) {
             $cols[] = [
-                'Column' => $col['field'] . ($col['primary']
-                        ? ' PRIMARY' : ''),
+                'Column' => $col['field'] . ($col['primary'] ? ' PRIMARY' : ''),
                 'Type' => $col['full_type']
                     . ($col['collation'] ? ' ' . $col['collation'] : '')
                     . ($col['auto_increment'] ? ' Auto Increment' : ''),
@@ -145,9 +140,10 @@ class ShowTable extends Command
      */
     protected function makeKeys(array $indexes) : array
     {
+        $keys = [];
         foreach ($indexes as $index) {
             if (empty($keys[$index['Key_name']])) {
-                $keys[$index['Key_name']] = new \stdClass();
+                $keys[$index['Key_name']] = new stdClass();
                 $keys[$index['Key_name']]->name = $index['Key_name'];
                 $type = 'UNIQUE';
                 if ($index['Key_name'] === 'PRIMARY') {
@@ -161,7 +157,7 @@ class ShowTable extends Command
             }
             $keys[$index['Key_name']]->fields[] = $index['Column_name'];
         }
-        return $keys ?? [];
+        return $keys;
     }
 
     /**
@@ -177,20 +173,20 @@ class ShowTable extends Command
         if ( ! $show) {
             return [];
         }
-        $create_table = $show['Create Table'];
-        $on_actions = 'RESTRICT|NO ACTION|CASCADE|SET NULL|SET DEFAULT';
+        $createTable = $show['Create Table'];
+        $onActions = 'RESTRICT|NO ACTION|CASCADE|SET NULL|SET DEFAULT';
         $pattern = '`(?:[^`]|``)+`';
         \preg_match_all(
-            "~CONSTRAINT (${pattern}) FOREIGN KEY ?\\(((?:${pattern},? ?)+)\\) REFERENCES (${pattern})(?:\\.(${pattern}))? \\(((?:${pattern},? ?)+)\\)(?: ON DELETE (${on_actions}))?(?: ON UPDATE (${on_actions}))?~",
-            $create_table, // @phpstan-ignore-line
+            "~CONSTRAINT ({$pattern}) FOREIGN KEY ?\\(((?:{$pattern},? ?)+)\\) REFERENCES ({$pattern})(?:\\.({$pattern}))? \\(((?:{$pattern},? ?)+)\\)(?: ON DELETE ({$onActions}))?(?: ON UPDATE ({$onActions}))?~",
+            $createTable, // @phpstan-ignore-line
             $matches,
             \PREG_SET_ORDER
         );
-        $foreign_keys = [];
+        $foreignKeys = [];
         foreach ($matches as $match) {
-            \preg_match_all("~${pattern}~", $match[2], $source);
-            \preg_match_all("~${pattern}~", $match[5], $target);
-            $foreign_keys[] = [
+            \preg_match_all("~{$pattern}~", $match[2], $source);
+            \preg_match_all("~{$pattern}~", $match[5], $target);
+            $foreignKeys[] = [
                 'index' => \str_replace('`', '', $match[1]),
                 'source' => \str_replace('`', '', $source[0][0]),
                 'database' => \str_replace('`', '', $match[4] !== '' ? $match[3] : $match[4]),
@@ -201,7 +197,7 @@ class ShowTable extends Command
             ];
         }
         $fks = [];
-        foreach ($foreign_keys as $fk) {
+        foreach ($foreignKeys as $fk) {
             $fks[] = [
                 'Source' => $fk['source'],
                 'Target' => ( ! empty($fk['database']) ? $fk['database'] . '.' : '')

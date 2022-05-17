@@ -23,25 +23,25 @@ class ListSchemas extends Command
 
     public function run() : void
     {
-        $sql = 'SELECT `SCHEMA_NAME` AS "database",
-`DEFAULT_COLLATION_NAME` AS "collation"
+        $sql = 'SELECT `SCHEMA_NAME` AS `schema`,
+`DEFAULT_COLLATION_NAME` AS `collation`
 FROM `information_schema`.`SCHEMATA`
 ORDER BY `SCHEMA_NAME`';
         $schemas = $this->getDatabase()->query($sql)->fetchArrayAll();
         if ( ! $schemas) {
-            CLI::write('No database.');
+            CLI::write('No database schema.');
             return;
         }
-        $sql = 'SELECT `TABLE_SCHEMA` AS "database",
-SUM(`DATA_LENGTH` + `INDEX_LENGTH`) AS "size",
-COUNT(DISTINCT CONCAT(`TABLE_SCHEMA`, ".", `TABLE_NAME`)) AS "tables"
+        $sql = 'SELECT `TABLE_SCHEMA` AS `schema`,
+SUM(`DATA_LENGTH` + `INDEX_LENGTH`) AS `size`,
+COUNT(DISTINCT CONCAT(`TABLE_SCHEMA`, ".", `TABLE_NAME`)) AS `tables`
 FROM `information_schema`.`TABLES`
 GROUP BY `TABLE_SCHEMA`';
         $infos = $this->getDatabase()->query($sql)->fetchArrayAll();
         foreach ($schemas as &$schema) {
             $schema['size'] = $schema['tables'] = 0;
             foreach ($infos as $info) {
-                if ($info['database'] === $schema['database']) {
+                if ($info['schema'] === $schema['schema']) {
                     $schema['tables'] = $info['tables'];
                     $schema['size'] = Debugger::convertSize((int) $info['size']);
                     break;
