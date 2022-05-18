@@ -34,7 +34,6 @@ final class ListSchemasTest extends CommandTestCase
         self::assertStringContainsString('| mysql ', $contents);
         self::assertStringContainsString('| performance_schema ', $contents);
         self::assertStringContainsString('| sys ', $contents);
-        self::assertStringContainsString('| utf8mb4_general_ci ', $contents);
         self::assertStringContainsString('Total: ', $contents);
     }
 }

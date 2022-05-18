@@ -31,7 +31,6 @@ final class QueryTest extends CommandTestCase
         self::assertStringContainsString('| Default ', $contents);
         self::assertStringContainsString('| Extra ', $contents);
         self::assertStringContainsString('| id ', $contents);
-        self::assertStringContainsString('| int(11) ', $contents);
         self::assertStringContainsString('| email ', $contents);
         self::assertStringContainsString('| varchar(255) ', $contents);
         self::assertStringContainsString('Total: ', $contents);
